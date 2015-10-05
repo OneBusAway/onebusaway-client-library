@@ -61,7 +61,7 @@ public class JacksonTest extends ObaTestCase {
 
     public void testStopsForLocation() throws Exception {
         Reader reader = Resources
-                .read(Resources.getTestUri("stops_for_location_downtown_seattle"));
+                .read("https://github.com/OneBusAway/onebusaway-client-library/raw/master/src/test/resources/stops_for_location_downtown_seattle.json");
         ObaApi.SerializationHandler serializer = ObaApi
                 .getSerializer(ObaStopsForLocationResponse.class);
         ObaStopsForLocationResponse response = serializer

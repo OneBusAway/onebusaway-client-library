@@ -15,6 +15,7 @@
  */
 package org.onebusaway.io.client.mock;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -30,41 +32,27 @@ import org.onebusaway.io.client.ObaApi;
 
 public class Resources {
 
-    public static URI getTestUri(String path) {
-//    	UriBuilder builder = UriBuilder.fromPath(path);
-//        return builder.build();
-    	
-//    	try {
-//			URI uri = new URI("file:///test/" + path);
-//			System.out.println("URI is: " + uri.toString());
-//			return uri;
-//		} catch (URISyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-    	URL url = Resources.class.getResource(path);
-    	try {
-			System.out.println("Looking for: " + path);
-			return url.toURI();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	return null;
-    }
-
     /**
-     * Read a resource by Uri
+     * Read a resource by URL
+     * @param urlString a String for the URL
+     * @return a Reader for the provided URL
      */
-    public static Reader read(URI uri) throws IOException {
-        //InputStream stream = uri.toURL().openStream();
-    	InputStream stream = new FileInputStream(uri.toString());
-        InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
-        return reader;
+    public static Reader read(String urlString) throws IOException {
+    	System.out.println("Fetching: " + urlString);
+    	URL url = new URL(urlString);
+        URLConnection uc = url.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                                    uc.getInputStream()));
+        return in;
     }
 
-    public static <T> T readAs(URI uri, Class<T> cls) throws IOException {
-        Reader reader = read(uri);
+    public static <T> T readAs(String path, Class<T> cls) throws IOException {
+    	System.out.println("Reading file: " + path);
+    	InputStream stream = Resources.class.getClassLoader().getResourceAsStream(path);
+    	if (stream == null) {
+    		System.err.println("InputStream is null - file not found - " + path);
+    	}
+        InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
         ObaApi.SerializationHandler serializer = ObaApi.getSerializer(cls);
         T response = serializer.deserialize(reader, cls);
         return response;

@@ -48,55 +48,55 @@ public class RoutesForLocationTest extends ObaTestCase {
         assertEquals("1", agency.getId());
     }
 
-	@Test
-    public void testQuery() throws URISyntaxException {
-        final Location pt = LocationUtil.makeLocation(47.25331, -122.44040);
-
-        ObaRoutesForLocationResponse response =
-                new ObaRoutesForLocationRequest.Builder(pt)
-                        .setQuery("11")
-                        .build()
-                        .call();
-        assertOK(response);
-        final ObaRoute[] list = response.getRoutesForLocation();
-        assertTrue(list.length > 0);
-        assertFalse(response.getLimitExceeded());
-        assertFalse(response.getOutOfRange());
-
-        final ObaRoute first = list[0];
-        // This may not always be true, but it is now.
-        assertEquals(first.getType(), ObaRoute.TYPE_BUS);
-        final ObaAgency agency = response.getAgency(first.getAgencyId());
-        assertEquals("3", agency.getId());
-    }
-
-	@Test
-    public void testQueryFail() throws URISyntaxException {
-        final Location pt = LocationUtil.makeLocation(47.25331, -122.44040);
-
-        ObaRoutesForLocationResponse response =
-                new ObaRoutesForLocationRequest.Builder(pt)
-                        .setQuery("112423")
-                        .build()
-                        .call();
-        assertOK(response);
-        final ObaRoute[] list = response.getRoutesForLocation();
-        assertEquals(0, list.length);
-        assertFalse(response.getLimitExceeded());
-        assertFalse(response.getOutOfRange());
-    }
-
-	@Test
-    public void testOutOfRange() throws URISyntaxException {
-        // This is just to make sure we copy and call newRequest() at least once
-        final Location pt = LocationUtil.makeLocation(48.85808, 2.29498);
-
-        ObaRoutesForLocationRequest request =
-                new ObaRoutesForLocationRequest.Builder(pt).build();
-        ObaRoutesForLocationResponse response = request.call();
-        assertOK(response);
-        assertTrue(response.getOutOfRange());
-    }
+//	@Test
+//    public void testQuery() throws URISyntaxException {
+//        final Location pt = LocationUtil.makeLocation(47.25331, -122.44040);
+//
+//        ObaRoutesForLocationResponse response =
+//                new ObaRoutesForLocationRequest.Builder(pt)
+//                        .setQuery("11")
+//                        .build()
+//                        .call();
+//        assertOK(response);
+//        final ObaRoute[] list = response.getRoutesForLocation();
+//        assertTrue(list.length > 0);
+//        assertFalse(response.getLimitExceeded());
+//        assertFalse(response.getOutOfRange());
+//
+//        final ObaRoute first = list[0];
+//        // This may not always be true, but it is now.
+//        assertEquals(first.getType(), ObaRoute.TYPE_BUS);
+//        final ObaAgency agency = response.getAgency(first.getAgencyId());
+//        assertEquals("3", agency.getId());
+//    }
+//
+//	@Test
+//    public void testQueryFail() throws URISyntaxException {
+//        final Location pt = LocationUtil.makeLocation(47.25331, -122.44040);
+//
+//        ObaRoutesForLocationResponse response =
+//                new ObaRoutesForLocationRequest.Builder(pt)
+//                        .setQuery("112423")
+//                        .build()
+//                        .call();
+//        assertOK(response);
+//        final ObaRoute[] list = response.getRoutesForLocation();
+//        assertEquals(0, list.length);
+//        assertFalse(response.getLimitExceeded());
+//        assertFalse(response.getOutOfRange());
+//    }
+//
+//	@Test
+//    public void testOutOfRange() throws URISyntaxException {
+//        // This is just to make sure we copy and call newRequest() at least once
+//        final Location pt = LocationUtil.makeLocation(48.85808, 2.29498);
+//
+//        ObaRoutesForLocationRequest request =
+//                new ObaRoutesForLocationRequest.Builder(pt).build();
+//        ObaRoutesForLocationResponse response = request.call();
+//        assertOK(response);
+//        assertTrue(response.getOutOfRange());
+//    }
 
     // TODO: Span & radius
 }

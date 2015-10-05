@@ -18,6 +18,7 @@ package org.onebusaway.io.client.test;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
+import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.request.ObaCurrentTimeRequest;
 import org.onebusaway.io.client.request.ObaCurrentTimeResponse;
 

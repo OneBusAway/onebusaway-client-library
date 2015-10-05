@@ -42,11 +42,11 @@ public class RouteRequestTest extends ObaTestCase {
         assertEquals("1", response.getAgencyId());
         assertEquals(ObaRoute.TYPE_BUS, response.getType());
         String routeColor = defaultRouteLineColor;
-        if (response.getColor() != null) {
+        if (response.getColor() != null && !response.getColor().isEmpty()) {
             routeColor = response.getColor();
         }
         String routeTextColor = defaultRouteTextColor;
-        if (response.getTextColor() != null) {
+        if (response.getTextColor() != null && !response.getTextColor().isEmpty()) {
             routeTextColor = response.getTextColor();
         }
         // KCM doesn't define route line or text color in their GTFS, so we should be using the defaults
@@ -76,7 +76,7 @@ public class RouteRequestTest extends ObaTestCase {
         String defaultRouteLineColor = "00F";
         String defaultRouteTextColor = "ff000000";
 
-        ObaRouteRequest.Builder builder = new ObaRouteRequest.Builder("Hillsborough Area Regional Transit_5");
+        ObaRouteRequest.Builder builder = new ObaRouteRequest.Builder("Hillsborough%20Area%20Regional%20Transit_5");
         ObaRouteRequest request = builder.build();
         ObaRouteResponse response = request.call();
         assertOK(response);

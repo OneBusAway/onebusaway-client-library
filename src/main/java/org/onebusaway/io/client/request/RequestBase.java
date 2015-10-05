@@ -84,7 +84,7 @@ public class RequestBase {
 
         protected URI buildUri() throws URISyntaxException {
             ObaContext context = (mObaContext != null) ? mObaContext : ObaApi.getDefaultContext();
-            context.setBaseUrl(mBuilder);
+            context.buildFullUrl(mBuilder);
             context.setAppInfo(mBuilder);
             mBuilder.queryParam("version", "2");
             mBuilder.queryParam("key", context.getApiKey());

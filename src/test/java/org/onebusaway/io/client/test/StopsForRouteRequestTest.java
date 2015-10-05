@@ -52,7 +52,7 @@ public class StopsForRouteRequestTest extends ObaTestCase {
 	@Test
     public void testNoShapes() throws UnsupportedEncodingException, URISyntaxException {
         ObaStopsForRouteResponse response =
-                new ObaStopsForRouteRequest.Builder("1_44")
+                new ObaStopsForRouteRequest.Builder("1_45")
                         .setIncludeShapes(false)
                         .build()
                         .call();

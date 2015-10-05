@@ -35,7 +35,7 @@ public class MockConnectionFactory implements ObaConnectionFactory {
 
     public MockConnectionFactory() {
         try {
-            mUriMap = Resources.readAs(Resources.getTestUri("urimap.json"), UriMap.class);
+            mUriMap = Resources.readAs("urimap.json", UriMap.class);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to read urimap: " + e);
@@ -63,24 +63,26 @@ public class MockConnectionFactory implements ObaConnectionFactory {
         public String getUri(URI uri) {
             String normalizedUri = normalizeUri(uri);
             String result = null;
-            if (uris == null) {
-                throw new RuntimeException("No uris in URIMap -- did the file parse correctly?");
-            }
-            result = uris.get(normalizedUri);
-            if (result == null) {
-                throw new RuntimeException("No response for URI: " + normalizedUri);
-            }
-            return result;
+//            if (uris == null) {
+//                throw new RuntimeException("No uris in URIMap -- did the file parse correctly?");
+//            }
+//            result = uris.get(normalizedUri);
+//            if (result == null) {
+//                throw new RuntimeException("No response for URI: " + normalizedUri);
+//            }
+            return normalizedUri;
         }
 
         private String normalizeUri(URI uri) {
             UriBuilder builder = UriBuilder.fromUri(uri);
+            // Remove all query parameters, as they interfere with getting file from Github
+            builder.replaceQuery(null);
 
-            List<NameValuePair> params = URLEncodedUtils.parse(uri, "UTF-8");
-            params.removeAll(PARAMS_LIST);
-            for (NameValuePair pair : params) {
-                builder.queryParam(pair.getName(), pair.getValue());
-            }
+//            List<NameValuePair> params = URLEncodedUtils.parse(uri, "UTF-8");
+//            params.removeAll(PARAMS_LIST);
+//            for (NameValuePair pair : params) {
+//                builder.queryParam(pair.getName(), pair.getValue());
+//            }
 
             return builder.build().toString();
         }

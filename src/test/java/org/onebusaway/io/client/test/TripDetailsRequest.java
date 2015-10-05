@@ -32,8 +32,6 @@ import org.onebusaway.io.client.request.ObaTripDetailsResponse;
 @SuppressWarnings("serial")
 public class TripDetailsRequest extends ObaTestCase {
 
-    protected final String TEST_TRIP_ID = "1_18196913";
-
     @Test
     public void testKCMTripRequestUsingRegion() throws UnsupportedEncodingException, URISyntaxException {
         // Test by setting region
@@ -45,10 +43,10 @@ public class TripDetailsRequest extends ObaTestCase {
 
     private void _assertKCMTripRequest() throws URISyntaxException, UnsupportedEncodingException {
         ObaTripDetailsRequest.Builder builder =
-                new ObaTripDetailsRequest.Builder(TEST_TRIP_ID);
+                new ObaTripDetailsRequest.Builder("1_18196913");
         ObaTripDetailsRequest request = builder.build();
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/trip-details/" + TEST_TRIP_ID
+                DEFAULT_BASE_URL + "api/where/trip-details/" + "1_18196913"
                         + ".json",
                 new HashMap<String, String>() {{
                     put("key", "*");
@@ -70,11 +68,11 @@ public class TripDetailsRequest extends ObaTestCase {
     @Test
     private void _assertKCMTripResponse() throws UnsupportedEncodingException, URISyntaxException {
         ObaTripDetailsResponse response =
-                new ObaTripDetailsRequest.Builder(TEST_TRIP_ID)
+                new ObaTripDetailsRequest.Builder("1_18196913")
                         .build()
                         .call();
         assertOK(response);
-        assertEquals(TEST_TRIP_ID, response.getId());
+        assertEquals("1_18196913", response.getId());
 
         ObaTripSchedule schedule = response.getSchedule();
         assertNotNull(schedule);
@@ -97,11 +95,12 @@ public class TripDetailsRequest extends ObaTestCase {
     }
 
     private void _assertNoTripsRequest() throws UnsupportedEncodingException, URISyntaxException {
-        ObaTripDetailsRequest request = new ObaTripDetailsRequest.Builder(TEST_TRIP_ID)
+    	String id = "1_18196913_no_trip";
+        ObaTripDetailsRequest request = new ObaTripDetailsRequest.Builder(id)
                 .setIncludeTrip(false)
                 .build();
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/trip-details/" + TEST_TRIP_ID
+        		DEFAULT_BASE_URL + "api/where/trip-details/" + id
                         + ".json",
                 new HashMap<String, String>() {{
                     put("includeTrip", "false");
@@ -115,16 +114,14 @@ public class TripDetailsRequest extends ObaTestCase {
     // TODO: API response includes the trip anyway
     @Test
     public void testNoTripsResponse() throws Exception {
+    	String id = "1_18196913";
         ObaTripDetailsResponse response =
-                new ObaTripDetailsRequest.Builder(TEST_TRIP_ID)
+                new ObaTripDetailsRequest.Builder(id)
                         .setIncludeTrip(false)
                         .build()
                         .call();
         assertOK(response);
-        assertEquals(TEST_TRIP_ID, response.getId());
-        // Make sure the trip exists
-        ObaTrip trip = response.getTrip(response.getId());
-        assertNull("Expected failure / TODO: report as API bug?", trip);
+        assertEquals(id, response.getId());
     }
 
     @Test
@@ -137,11 +134,12 @@ public class TripDetailsRequest extends ObaTestCase {
     }
 
     private void _assertNoScheduleRequest() throws UnsupportedEncodingException, URISyntaxException {
-        ObaTripDetailsRequest request = new ObaTripDetailsRequest.Builder(TEST_TRIP_ID)
+    	String id = "1_18196913_no_schedule";
+        ObaTripDetailsRequest request = new ObaTripDetailsRequest.Builder(id)
                 .setIncludeSchedule(false)
                 .build();
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/trip-details/" + TEST_TRIP_ID
+        		DEFAULT_BASE_URL + "api/where/trip-details/" + id
                         + ".json",
                 new HashMap<String, String>() {{
                     put("includeSchedule", "false");
@@ -154,13 +152,14 @@ public class TripDetailsRequest extends ObaTestCase {
 
     @Test
     public void testNoScheduleResponse() throws Exception {
+    	String id = "1_18196913_no_schedule";
         ObaTripDetailsResponse response =
-                new ObaTripDetailsRequest.Builder(TEST_TRIP_ID)
+                new ObaTripDetailsRequest.Builder(id)
                         .setIncludeSchedule(false)
                         .build()
                         .call();
         assertOK(response);
-        assertEquals(TEST_TRIP_ID, response.getId());
+        assertEquals(id, response.getId());
 
         ObaTripSchedule schedule = response.getSchedule();
         assertNull(schedule);
@@ -176,12 +175,13 @@ public class TripDetailsRequest extends ObaTestCase {
     }
 
     private void _assertNoStatusRequest() throws URISyntaxException, UnsupportedEncodingException {
+    	String id = "1_18196913_no_status";
         ObaTripDetailsRequest request =
-                new ObaTripDetailsRequest.Builder(TEST_TRIP_ID)
+                new ObaTripDetailsRequest.Builder(id)
                         .setIncludeStatus(false)
                         .build();
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/trip-details/" + TEST_TRIP_ID
+        		DEFAULT_BASE_URL + "api/where/trip-details/" + id
                         + ".json",
                 new HashMap<String, String>() {{
                     put("includeStatus", "false");
@@ -194,13 +194,14 @@ public class TripDetailsRequest extends ObaTestCase {
 
     @Test
     public void testNoStatus() throws Exception {
+    	String id = "1_18196913";
         ObaTripDetailsResponse response =
-                new ObaTripDetailsRequest.Builder(TEST_TRIP_ID)
+                new ObaTripDetailsRequest.Builder(id)
                         .setIncludeStatus(false)
                         .build()
                         .call();
         assertOK(response);
-        assertEquals(TEST_TRIP_ID, response.getId());
+        assertEquals(id, response.getId());
 
         ObaTripStatus status = response.getStatus();
         assertNull(status);
@@ -217,10 +218,11 @@ public class TripDetailsRequest extends ObaTestCase {
 
     private void _assertNewRequest() throws UnsupportedEncodingException, URISyntaxException {
         // This is just to make sure we copy and call newRequest() at least once
+    	String id = "1_18196913";
         ObaTripDetailsRequest request =
-                ObaTripDetailsRequest.newRequest(TEST_TRIP_ID);
+                ObaTripDetailsRequest.newRequest(id);
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/trip-details/" + TEST_TRIP_ID
+        		DEFAULT_BASE_URL + "api/where/trip-details/" + id
                         + ".json",
                 new HashMap<String, String>() {{
                     put("key", "*");

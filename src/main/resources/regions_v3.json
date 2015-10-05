@@ -24,7 +24,7 @@
         "stopInfoUrl": null, 
         "active": true, 
         "facebookUrl": "", 
-        "obaBaseUrl": "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/fixTests/src/test/resources/api/", 
+        "obaBaseUrl": "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/master/src/test/resources/api/", 
         "id": 0, 
         "experimental": false, 
         "regionName": "Tampa"
@@ -97,7 +97,7 @@
         "stopInfoUrl": "http://stopinfo.pugetsound.onebusaway.org", 
         "active": true, 
         "facebookUrl": "https://www.facebook.com/pages/OneBusAway/216091804930", 
-        "obaBaseUrl": "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/fixTests/src/test/resources/", 
+        "obaBaseUrl": "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/master/src/test/resources/", 
         "id": 1, 
         "experimental": false, 
         "regionName": "Puget Sound"

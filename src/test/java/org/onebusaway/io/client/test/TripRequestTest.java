@@ -82,7 +82,7 @@ public class TripRequestTest extends ObaTestCase {
         // This is just to make sure we copy and call newRequest() at least once
         ObaTripRequest request = ObaTripRequest.newRequest(TEST_TRIP_ID);
         UriAssert.assertUriMatch(
-                "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/fixTests/src/test/resources/api/where/trip/" + TEST_TRIP_ID + ".json",
+                "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/master/src/test/resources/api/where/trip/" + TEST_TRIP_ID + ".json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");

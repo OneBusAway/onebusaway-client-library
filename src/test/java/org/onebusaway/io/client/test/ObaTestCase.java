@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 public abstract class ObaTestCase extends TestCase {
 
-    public static final String DEFAULT_BASE_URL = "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/fixTests/src/test/resources/";
+    public static final String DEFAULT_BASE_URL = "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/master/src/test/resources/";
 	
 	private ObaMock mMock;
 

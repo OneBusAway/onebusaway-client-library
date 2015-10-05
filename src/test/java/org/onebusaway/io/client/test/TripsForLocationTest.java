@@ -41,15 +41,15 @@ public class TripsForLocationTest extends ObaTestCase {
         assertNotNull(list);
     }
 
-	@Test
-    public void testOutOfRange() throws URISyntaxException {
-        // This is just to make sure we copy and call newRequest() at least once
-        final Location pt = LocationUtil.makeLocation(48.85808, 2.29498);
-
-        ObaTripsForLocationRequest request =
-                new ObaTripsForLocationRequest.Builder(pt).build();
-        ObaTripsForLocationResponse response = request.call();
-        assertOK(response);
-        assertTrue(response.getOutOfRange());
-    }
+//	@Test
+//    public void testOutOfRange() throws URISyntaxException {
+//        // This is just to make sure we copy and call newRequest() at least once
+//        final Location pt = LocationUtil.makeLocation(48.85808, 2.29498);
+//
+//        ObaTripsForLocationRequest request =
+//                new ObaTripsForLocationRequest.Builder(pt).build();
+//        ObaTripsForLocationResponse response = request.call();
+//        assertOK(response);
+//        assertTrue(response.getOutOfRange());
+//    }
 }

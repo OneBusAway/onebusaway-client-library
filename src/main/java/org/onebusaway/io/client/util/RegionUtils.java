@@ -16,13 +16,12 @@
  */
 package org.onebusaway.io.client.util;
 
-import java.io.File;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -454,14 +453,32 @@ public class RegionUtils {
      * @return list of regions retrieved from the regions file in app resources
      */
     public static ArrayList<ObaRegion> getRegionsFromResources() {
-    	ClassLoader classLoader = RegionUtils.class.getClassLoader();
-    	File file = new File(classLoader.getResource("regions_v3.json").getFile());
+    	URL test = com.google.common.io.Resources.getResource("regions_v3.json");
+//    	InputStream input = Resources.class.getClassLoader().getResourceAsStream("regions_v3.json");
+//    	if (input == null) {
+//    		System.err.println("InputStream is null - file not found - regions_v3.json");
+//    	}
+//        InputStreamReader reader = new InputStreamReader(stream, "UTF-8");  
     	
-        final UriBuilder builder = UriBuilder.fromUri(file.toURI());
+    	ClassLoader classLoader = RegionUtils.class.getClassLoader();
+    	
+        UriBuilder builder;
+		try {
+			builder = UriBuilder.fromUri(test.toURI());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //        builder.scheme(ContentResolver.SCHEME_ANDROID_RESOURCE);
 //        builder.authority(context.getPackageName());
 //        builder.path(Integer.toString(R.raw.regions_v3));
-        ObaRegionsResponse response = ObaRegionsRequest.newRequest(builder.build()).call();
+        ObaRegionsResponse response = null;
+		try {
+			response = ObaRegionsRequest.newRequest(test.toURI()).call();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return new ArrayList<ObaRegion>(Arrays.asList(response.getRegions()));
     }
 

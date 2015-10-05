@@ -16,16 +16,16 @@
 package org.onebusaway.io.client.test;
 
 import org.onebusaway.io.client.ObaApi;
-import org.onebusaway.io.client.elements.ObaRegion;
-import org.onebusaway.io.client.mock.MockRegion;
 import org.onebusaway.io.client.mock.ObaMock;
 import org.onebusaway.io.client.request.ObaResponse;
 
 import junit.framework.TestCase;
 
-public class ObaTestCase extends TestCase {
+public abstract class ObaTestCase extends TestCase {
 
-    private ObaMock mMock;
+    public static final String DEFAULT_BASE_URL = "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/fixTests/src/test/resources/";
+	
+	private ObaMock mMock;
 
     public static void assertOK(ObaResponse response) {
         assertNotNull(response);
@@ -37,12 +37,9 @@ public class ObaTestCase extends TestCase {
         mMock = new ObaMock();
 
         /*
-         * Assume Puget Sound API, mainly for backwards compatibility with older tests
-         * that were written before multi-region functionality. This is overwritten in some
-         * subclasses so multiple regions / APIs can be tested.
-         */
-        ObaRegion ps = MockRegion.getPugetSound();
-        ObaApi.getDefaultContext().setRegion(ps);
+         * Set to the mock Github URL where the test responses are remotely stored
+         */        
+        ObaApi.getDefaultContext().setBaseUrl(DEFAULT_BASE_URL);
     }
 
     @Override

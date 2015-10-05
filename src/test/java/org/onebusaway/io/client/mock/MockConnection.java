@@ -50,7 +50,7 @@ public class MockConnection implements ObaConnection {
             mResponseCode = HttpURLConnection.HTTP_NOT_FOUND;
             throw new FileNotFoundException();
         }
-        return Resources.read(Resources.getTestUri(response));
+        return Resources.read(response);
     }
 
     public Reader post(String string) throws IOException {

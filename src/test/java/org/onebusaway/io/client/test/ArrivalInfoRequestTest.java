@@ -49,7 +49,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
                 new ObaArrivalInfoRequest.Builder("1_29261");
         ObaArrivalInfoRequest request = builder.build();
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_29261.json",
+        		DEFAULT_BASE_URL + "api/where/arrivals-and-departures-for-stop/1_29261.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");
@@ -72,7 +72,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
                 new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105");
         ObaArrivalInfoRequest request = builder.build();
         UriAssert.assertUriMatch(
-                "http://api.tampa.onebusaway.org/api/api/where/arrivals-and-departures-for-stop/Hillsborough%20Area%20Regional%20Transit_3105.json",
+        		DEFAULT_BASE_URL + "api/api/where/arrivals-and-departures-for-stop/Hillsborough+Area+Regional+Transit_3105.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");
@@ -118,7 +118,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
 
     private void _assertHARTStopResponse() throws UnsupportedEncodingException, URISyntaxException {
         ObaArrivalInfoResponse response =
-                new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105").build().call();
+                new ObaArrivalInfoRequest.Builder("Hillsborough%20Area%20Regional%20Transit_3105").build().call();
         assertOK(response);
         ObaStop stop = response.getStop();
         assertNotNull(stop);
@@ -149,7 +149,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
         ObaArrivalInfoRequest request = ObaArrivalInfoRequest.newRequest("1_10");
         assertNotNull(request);
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_10.json",
+        		DEFAULT_BASE_URL + "api/where/arrivals-and-departures-for-stop/1_10.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");

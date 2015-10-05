@@ -36,6 +36,8 @@ public class ObaContext {
     private ObaConnectionFactory mConnectionFactory = ObaDefaultConnectionFactory.getInstance();
 
     private ObaRegion mRegion;
+    
+    private String mBaseUrl;
 
     public ObaContext() {
     }
@@ -82,8 +84,27 @@ public class ObaContext {
     public ObaConnectionFactory getConnectionFactory() {
         return mConnectionFactory;
     }
+    
+    /**
+     * Used by external classes to set the base URL
+     * @param url
+     */
+    public void setBaseUrl(String url) {
+    	mBaseUrl = url;
+    }
 
-    public void setBaseUrl(UriBuilder builder) throws URISyntaxException {
+    /**
+     * Used by the various OBA request classes to build a full URL, using either the Region
+     * set in this class or the Base URL set in this class (a set Region always overrides
+     * a set URL).
+     * @param builder A UriBuilder with the full relative path already set 
+     * (e.g., "api/where/arrivals-and-departures-for-stop/1_1622.json".  After this method
+     * returns, the builder will contain the full URL for the REST API endpoint (e.g., 
+     * "http://api.tampa.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_1622.json"
+     * 
+     * @throws URISyntaxException
+     */
+    public void buildFullUrl(UriBuilder builder) throws URISyntaxException {
 //        URI baseUrl = null;
 //        System.out.println("Using region base URL '" + mRegion.getObaBaseUrl() + "'.");
 //
@@ -101,9 +122,22 @@ public class ObaContext {
 //        builder.encodedAuthority(baseUrl.getEncodedAuthority());
 //        builder.encodedPath(path.build().getEncodedPath());
 	      URI baseUrl = null;
-	      System.out.println("Using region base URL '" + mRegion.getObaBaseUrl() + "'.");
-	
-	      baseUrl = new URI(mRegion.getObaBaseUrl());
+	      
+	      if (mRegion != null) {
+	    	  System.out.println("Using region base URL '" + mRegion.getObaBaseUrl() + "'.");	
+	    	  baseUrl = new URI(mRegion.getObaBaseUrl());
+	      } else {
+	    	  try {
+                  // URI.parse() doesn't tell us if the scheme is missing, so use URL() instead (#126)
+                  URL url = new URL(mBaseUrl);
+              } catch (MalformedURLException e) {
+                  // Assume HTTP scheme, since without a scheme the Uri won't parse the authority
+            	  mBaseUrl = "http://" + mBaseUrl;
+              }
+
+              baseUrl = new URI(mBaseUrl);
+	    	  System.out.println("Using set base URL - " + baseUrl);
+	      }
 	  
 	      // Copy partial path (if one exists) from the base URL
 	      UriBuilder path = UriBuilder.fromPath(baseUrl.getPath());

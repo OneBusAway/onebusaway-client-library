@@ -34,7 +34,7 @@ public class TripRequestTest extends ObaTestCase {
 
     @Test
     public void testKCMTripRequest() throws UnsupportedEncodingException, URISyntaxException {
-        // Test by setting region
+        // Test region
         ObaRegion ps = MockRegion.getPugetSound();
         assertNotNull(ps);
         ObaApi.getDefaultContext().setRegion(ps);
@@ -46,11 +46,8 @@ public class TripRequestTest extends ObaTestCase {
         ObaTripRequest.Builder builder = new ObaTripRequest.Builder(TEST_TRIP_ID);
         ObaTripRequest request = builder.build();
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/trip/" + TEST_TRIP_ID + ".json",
-                new HashMap<String, String>() {{
-                    put("key", "*");
-                    put("version", "2");
-                }},
+        		DEFAULT_BASE_URL + "api/where/trip/" + TEST_TRIP_ID + ".json",
+                null,
                 request
         );
     }
@@ -85,7 +82,7 @@ public class TripRequestTest extends ObaTestCase {
         // This is just to make sure we copy and call newRequest() at least once
         ObaTripRequest request = ObaTripRequest.newRequest(TEST_TRIP_ID);
         UriAssert.assertUriMatch(
-                "http://api.pugetsound.onebusaway.org/api/where/trip/" + TEST_TRIP_ID + ".json",
+                "https://raw.githubusercontent.com/OneBusAway/onebusaway-client-library/fixTests/src/test/resources/api/where/trip/" + TEST_TRIP_ID + ".json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");

@@ -109,4 +109,37 @@
             </plugin>
         </plugins>
     </build>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<distribution_id>nexus.onebusaway.org-releases</distribution_id>
+		<distribution_name>OneBusAway Nexus Release Repository</distribution_name>
+		<distribution_url>http://nexus.onebusaway.org/content/repositories/releases/</distribution_url>
+		<snapshot_distribution_id>nexus.onebusaway.org-snapshots</snapshot_distribution_id>
+		<snapshot_distribution_name>OneBusAway Nexus Snapshots Repository</snapshot_distribution_name>
+		<snapshot_distribution_url>http://nexus.onebusaway.org/content/repositories/snapshots/</snapshot_distribution_url>
+		<site_id>developer.onebusaway.org</site_id>
+		<site_deployment_base>scp://developer.onebusaway.org/var/www/sites/developer/modules</site_deployment_base>
+		<site_url>${site_deployment_base}/${project.name}/${project.version}</site_url>
+		<site_base_url>http://developer.onebusaway.org/modules</site_base_url>
+		<maven_javadoc_plugin_version>2.7</maven_javadoc_plugin_version>
+		<maven_project_info_reports_plugin_version>2.4</maven_project_info_reports_plugin_version>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>${distribution_id}</id>
+			<name>${distribution_name}</name>
+			<url>${distribution_url}</url>
+		</repository>
+		<snapshotRepository>
+			<id>${snapshot_distribution_id}</id>
+			<name>${snapshot_distribution_name}</name>
+			<url>${snapshot_distribution_url}</url>
+		</snapshotRepository>
+		<site>
+			<id>${site_id}</id>
+			<url>${site_url}</url>
+		</site>
+	</distributionManagement>
 </project>

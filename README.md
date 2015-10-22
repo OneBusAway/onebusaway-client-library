@@ -5,6 +5,27 @@ A Java library that makes it easy to call the OneBusAway REST APIs (http://devel
 
 You'll need [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
 
+### Including this library in your application
+
+You can use Maven to add this library to your project.  Add the following to your `pom.xml`:
+
+~~~
+<repositories>
+	<repository>
+  		<id>public.onebusaway.org</id>
+  		<url>http://nexus.onebusaway.org/content/groups/public/</url>
+	</repository>
+</repositories>
+
+<dependencies>
+	<dependency>
+		<groupId>org.onebusaway</groupId>
+		<artifactId>onebusaway-client-library</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</dependency>
+</dependencies>
+~~~
+
 ### Usage
 
 The below example shows how to get the stops near a location, first by using the results of the OBA Regions API, and then secondly by setting a custom OBA Server API.

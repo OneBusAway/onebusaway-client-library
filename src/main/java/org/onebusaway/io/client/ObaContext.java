@@ -124,7 +124,7 @@ public class ObaContext {
 	      URI baseUrl = null;
 	      
 	      if (mRegion != null) {
-	    	  System.out.println("Using region base URL '" + mRegion.getObaBaseUrl() + "'.");	
+	    	  System.out.println("Using region base URL '" + mRegion.getObaBaseUrl() + "'.");
 	    	  baseUrl = new URI(mRegion.getObaBaseUrl());
 	      } else {
 	    	  try {

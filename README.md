@@ -31,7 +31,7 @@ You can use Maven to add this library to your project.  Add the following to you
 The below example shows how to get the stops near a location, first by using the results of the OBA Regions API, and then secondly by setting a custom OBA Server API.
 
 ~~~
-private static void getStops() throws IOException {
+private static void callObaApis() throws IOException {
   // Set the API key to be used - should be changed to your API key
   ObaApi.getDefaultContext().setApiKey("TEST");
   ObaRegionsResponse response = null;
@@ -50,17 +50,18 @@ private static void getStops() throws IOException {
 		  getStops();
 	  }
   }
+  
+  /**
+   * An example of setting a custom API server
+   */
+  
+  // First, clear the region, if it was already set
+  ObaApi.getDefaultContext().setRegion(null);
 
   // An example of setting a custom API server
-  UriBuilder builder = UriBuilder.fromUri("http://api.tampa.onebusaway.org/api/");
-
-  try {
-  	ObaApi.getDefaultContext().setBaseUrl(builder);
-  	// Get the stops from a custom API
-	  getStops();
-  } catch (URISyntaxException e) {
-  	e.printStackTrace();
-  }
+  String url = "http://api.tampa.onebusaway.org/api/";
+  ObaApi.getDefaultContext().setBaseUrl(url);
+  getStops();
 }
 
 private static void getStops() throws IOException {

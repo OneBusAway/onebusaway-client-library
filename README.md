@@ -46,7 +46,7 @@ private static void callObaApis() throws IOException {
   for (ObaRegion r : regions) {
     if (r.getName().equalsIgnoreCase("Tampa")) {
   	  ObaApi.getDefaultContext().setRegion(r);
-  	  // Get the stops for the region named "Tampa"
+  	      // Get the stops for the region named "Tampa"
 		  getStops();
 	  }
   }

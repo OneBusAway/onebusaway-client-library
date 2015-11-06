@@ -15,22 +15,17 @@
  */
 package org.onebusaway.io.client.test;
 
+import org.junit.Test;
+import org.onebusaway.io.client.ObaApi;
+import org.onebusaway.io.client.elements.*;
+import org.onebusaway.io.client.mock.MockRegion;
+import org.onebusaway.io.client.request.ObaArrivalInfoRequest;
+import org.onebusaway.io.client.request.ObaArrivalInfoResponse;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
-
-import org.junit.Test;
-import org.onebusaway.io.client.ObaApi;
-import org.onebusaway.io.client.elements.ObaAgency;
-import org.onebusaway.io.client.elements.ObaArrivalInfo;
-import org.onebusaway.io.client.elements.ObaRegion;
-import org.onebusaway.io.client.elements.ObaRoute;
-import org.onebusaway.io.client.elements.ObaSituation;
-import org.onebusaway.io.client.elements.ObaStop;
-import org.onebusaway.io.client.mock.MockRegion;
-import org.onebusaway.io.client.request.ObaArrivalInfoRequest;
-import org.onebusaway.io.client.request.ObaArrivalInfoResponse;
 
 @SuppressWarnings("serial")
 public class ArrivalInfoRequestTest extends ObaTestCase {
@@ -72,7 +67,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
                 new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105");
         ObaArrivalInfoRequest request = builder.build();
         UriAssert.assertUriMatch(
-        		DEFAULT_BASE_URL + "api/api/where/arrivals-and-departures-for-stop/Hillsborough+Area+Regional+Transit_3105.json",
+                DEFAULT_BASE_URL + "api/api/where/arrivals-and-departures-for-stop/Hillsborough%20Area%20Regional%20Transit_3105.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");

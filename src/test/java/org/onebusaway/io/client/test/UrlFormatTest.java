@@ -1,18 +1,18 @@
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.junit.Test;
 import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.elements.ObaRegion;
 import org.onebusaway.io.client.mock.MockRegion;
 import org.onebusaway.io.client.request.ObaArrivalInfoRequest;
 import org.onebusaway.io.client.util.RegionUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Tests various URL formats to ensure URI building/encoding is correct
@@ -62,7 +62,7 @@ public class UrlFormatTest extends ObaTestCase {
                 new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105");
         ObaArrivalInfoRequest request = builder.build();
         UriAssert.assertUriMatch(
-        		DEFAULT_BASE_URL + "api/api/where/arrivals-and-departures-for-stop/Hillsborough+Area+Regional+Transit_3105.json",
+                DEFAULT_BASE_URL + "api/api/where/arrivals-and-departures-for-stop/Hillsborough%20Area%20Regional%20Transit_3105.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");
@@ -86,7 +86,7 @@ public class UrlFormatTest extends ObaTestCase {
                 new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105");
         ObaArrivalInfoRequest request = builder.build();
         UriAssert.assertUriMatch(
-        		DEFAULT_BASE_URL + "api/api/where/arrivals-and-departures-for-stop/Hillsborough+Area+Regional+Transit_3105.json",
+                DEFAULT_BASE_URL + "api/api/where/arrivals-and-departures-for-stop/Hillsborough%20Area%20Regional%20Transit_3105.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");
@@ -109,7 +109,7 @@ public class UrlFormatTest extends ObaTestCase {
                 new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105");
         ObaArrivalInfoRequest request = builder.build();
         UriAssert.assertUriMatch(
-                "http://api.tampa.onebusaway.org/api/api/where/arrivals-and-departures-for-stop/Hillsborough+Area+Regional+Transit_3105.json",
+                "http://api.tampa.onebusaway.org/api/api/where/arrivals-and-departures-for-stop/Hillsborough%20Area%20Regional%20Transit_3105.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");
@@ -155,7 +155,7 @@ public class UrlFormatTest extends ObaTestCase {
                 new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105");
         ObaArrivalInfoRequest request = builder.build();
         UriAssert.assertUriMatch(
-                "http://api.tampa.onebusaway.org:8088/api/api/where/arrivals-and-departures-for-stop/Hillsborough+Area+Regional+Transit_3105.json",
+                "http://api.tampa.onebusaway.org:8088/api/api/where/arrivals-and-departures-for-stop/Hillsborough%20Area%20Regional%20Transit_3105.json",
                 new HashMap<String, String>() {{
                     put("key", "*");
                     put("version", "2");

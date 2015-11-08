@@ -36,12 +36,9 @@ private static void callObaApis() throws IOException {
   ObaApi.getDefaultContext().setApiKey("TEST");
   ObaRegionsResponse response = null;
 
-  try {
-    // Call the OBA Regions API (http://regions.onebusaway.org/regions-v3.json)
-	  response = ObaRegionsRequest.newRequest().call();
-  } catch (URISyntaxException e) {
-  	e.printStackTrace();
-  }
+  // Call the OBA Regions API (http://regions.onebusaway.org/regions-v3.json)
+  response = ObaRegionsRequest.newRequest().call();
+
   ArrayList<ObaRegion> regions = new ArrayList<ObaRegion>(Arrays.asList(response.getRegions()));
   for (ObaRegion r : regions) {
     if (r.getName().equalsIgnoreCase("Tampa")) {
@@ -70,14 +67,10 @@ private static void getStops() throws IOException {
 	l.setLongitude(-82.4298721);
 	ObaStopsForLocationResponse response2 = null;
 	// Call the OBA stops-for-location API (http://developer.onebusaway.org/modules/onebusaway-application-modules/current/api/where/methods/stops-for-location.html)
-	try {
-		response2 = new ObaStopsForLocationRequest.Builder(l)
-				.setQuery("3105")
-		        .build()
-		        .call();
-	} catch (URISyntaxException e) {
-		e.printStackTrace();
-	}
+	response2 = new ObaStopsForLocationRequest.Builder(l)
+			.setQuery("3105")
+	        .build()
+            .call();
   final ObaStop[] list = response2.getStops();
   for (ObaStop s : list) {
     System.out.println(s.getName() + "\n");

@@ -298,6 +298,12 @@ public final class ArrivalInfo {
                 sb.append(MINUTES);
             }
         }
+
+        // If its not real-time info, add statement about schedule
+        if (!mPredicted) {
+            sb.append(SPACE);
+            sb.append(BASED_ON_SCHEDULE);
+        }
         return sb.toString();
     }
 
@@ -404,5 +410,6 @@ public final class ArrivalInfo {
         String IS_ARRIVING_IN = "is arriving in";
         String MINUTE = "minute";
         String MINUTES = "minutes";
+        String BASED_ON_SCHEDULE = "based on the schedule";
     }
 }

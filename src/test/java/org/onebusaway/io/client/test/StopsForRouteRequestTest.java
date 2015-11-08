@@ -15,10 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import org.junit.Test;
 import org.onebusaway.io.client.elements.ObaShape;
 import org.onebusaway.io.client.elements.ObaStop;
@@ -26,10 +22,12 @@ import org.onebusaway.io.client.elements.ObaStopGrouping;
 import org.onebusaway.io.client.request.ObaStopsForRouteRequest;
 import org.onebusaway.io.client.request.ObaStopsForRouteResponse;
 
+import java.util.List;
+
 public class StopsForRouteRequestTest extends ObaTestCase {
 
 	@Test
-    public void testKCMRoute() throws UnsupportedEncodingException, URISyntaxException {
+    public void testKCMRoute() {
         ObaStopsForRouteRequest.Builder builder =
                 new ObaStopsForRouteRequest.Builder("1_44");
         ObaStopsForRouteRequest request = builder.build();
@@ -50,7 +48,7 @@ public class StopsForRouteRequestTest extends ObaTestCase {
     }
 
 	@Test
-    public void testNoShapes() throws UnsupportedEncodingException, URISyntaxException {
+    public void testNoShapes() {
         ObaStopsForRouteResponse response =
                 new ObaStopsForRouteRequest.Builder("1_45")
                         .setIncludeShapes(false)

@@ -15,9 +15,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 /**
@@ -34,11 +32,11 @@ public final class ObaAgencyRequest extends RequestBase implements Callable<ObaA
 
     public static class Builder extends RequestBase.BuilderBase {
 
-        public Builder(String agencyId) throws UnsupportedEncodingException {
+        public Builder(String agencyId) {
             super(getPathWithId("/agency/", agencyId));
         }
 
-        public ObaAgencyRequest build() throws URISyntaxException {
+        public ObaAgencyRequest build() {
             return new ObaAgencyRequest(buildUri());
         }
     }
@@ -46,14 +44,11 @@ public final class ObaAgencyRequest extends RequestBase implements Callable<ObaA
     /**
      * Helper method for constructing new instances.
      *
-     * @param context The package context.
-     * @param routeId The agency Id to request.
+     * @param agencyId The agency Id to request.
      * @return The new request instance.
-     * @throws UnsupportedEncodingException 
-     * @throws URISyntaxException 
      */
-    public static ObaAgencyRequest newRequest(String agency) throws UnsupportedEncodingException, URISyntaxException {
-        return new Builder(agency).build();
+    public static ObaAgencyRequest newRequest(String agencyId) {
+        return new Builder(agencyId).build();
     }
 
     @Override

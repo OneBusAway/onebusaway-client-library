@@ -24,7 +24,6 @@ import javax.ws.rs.core.UriBuilder;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 /**
@@ -69,15 +68,19 @@ public class RequestBase {
             mBuilder = UriBuilder.fromPath(path);
         }
 
-        protected static String getPathWithId(String pathElement, String id) throws UnsupportedEncodingException {
+        protected static String getPathWithId(String pathElement, String id) {
             StringBuilder builder = new StringBuilder(BASE_PATH);
             builder.append(pathElement);
-            builder.append(URLEncoder.encode(id, UTF8).replaceAll("\\+", "%20"));
+            try {
+                builder.append(URLEncoder.encode(id, UTF8).replaceAll("\\+", "%20"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             builder.append(".json");
             return builder.toString();
         }
 
-        protected URI buildUri() throws URISyntaxException {
+        protected URI buildUri() {
             ObaContext context = (mObaContext != null) ? mObaContext : ObaApi.getDefaultContext();
             context.buildFullUrl(mBuilder);
             context.setAppInfo(mBuilder);

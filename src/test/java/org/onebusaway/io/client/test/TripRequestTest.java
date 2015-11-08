@@ -15,10 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-
 import org.junit.Test;
 import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.elements.ObaRegion;
@@ -26,6 +22,10 @@ import org.onebusaway.io.client.elements.ObaRoute;
 import org.onebusaway.io.client.mock.MockRegion;
 import org.onebusaway.io.client.request.ObaTripRequest;
 import org.onebusaway.io.client.request.ObaTripResponse;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 
 @SuppressWarnings("serial")
 public class TripRequestTest extends ObaTestCase {
@@ -53,7 +53,7 @@ public class TripRequestTest extends ObaTestCase {
     }
 
     @Test
-    public void testKCMTripResponse() throws Exception {
+    public void testKCMTripResponse() {
         ObaTripResponse response =
                 new ObaTripRequest.Builder(TEST_TRIP_ID)
                         .build()

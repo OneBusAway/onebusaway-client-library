@@ -15,11 +15,10 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.concurrent.Callable;
-
 import org.onebusaway.location.Location;
+
+import java.net.URI;
+import java.util.concurrent.Callable;
 
 /**
  * Retrieve info about a specific route
@@ -86,7 +85,7 @@ public final class ObaRoutesForLocationRequest extends RequestBase
             return this;
         }
 
-        public ObaRoutesForLocationRequest build() throws URISyntaxException {
+        public ObaRoutesForLocationRequest build() {
             return new ObaRoutesForLocationRequest(buildUri());
         }
     }

@@ -15,9 +15,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 /**
@@ -35,7 +33,7 @@ public final class ObaTripDetailsRequest extends RequestBase
 
     public static class Builder extends RequestBase.BuilderBase {
 
-        public Builder(String tripId) throws UnsupportedEncodingException {
+        public Builder(String tripId) {
             super(getPathWithId("/trip-details/", tripId));
         }
 
@@ -72,7 +70,7 @@ public final class ObaTripDetailsRequest extends RequestBase
             return this;
         }
 
-        public ObaTripDetailsRequest build() throws URISyntaxException {
+        public ObaTripDetailsRequest build() {
             return new ObaTripDetailsRequest(buildUri());
         }
     }
@@ -80,13 +78,10 @@ public final class ObaTripDetailsRequest extends RequestBase
     /**
      * Helper method for constructing new instances.
      *
-     * @param context The package context.
      * @param tripId  The tripId to request.
      * @return The new request instance.
-     * @throws UnsupportedEncodingException 
-     * @throws URISyntaxException 
      */
-    public static ObaTripDetailsRequest newRequest(String tripId) throws UnsupportedEncodingException, URISyntaxException {
+    public static ObaTripDetailsRequest newRequest(String tripId) {
         return new Builder(tripId).build();
     }
 

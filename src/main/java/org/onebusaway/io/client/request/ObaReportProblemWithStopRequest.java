@@ -16,7 +16,6 @@
 package org.onebusaway.io.client.request;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 public final class ObaReportProblemWithStopRequest extends RequestBase
@@ -94,7 +93,7 @@ public final class ObaReportProblemWithStopRequest extends RequestBase
             return this;
         }
 
-        public ObaReportProblemWithStopRequest build() throws URISyntaxException {
+        public ObaReportProblemWithStopRequest build() {
             return new ObaReportProblemWithStopRequest(buildUri(), buildPostData());
         }
     }

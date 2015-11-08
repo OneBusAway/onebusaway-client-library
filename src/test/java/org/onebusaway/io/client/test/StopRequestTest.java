@@ -15,23 +15,20 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-
+import junitx.framework.ListAssert;
 import org.junit.Test;
 import org.onebusaway.io.client.elements.ObaRoute;
 import org.onebusaway.io.client.elements.ObaStop;
 import org.onebusaway.io.client.request.ObaStopRequest;
 import org.onebusaway.io.client.request.ObaStopResponse;
 
-import junitx.framework.ListAssert;
+import java.util.Arrays;
+import java.util.List;
 
 public class StopRequestTest extends ObaTestCase {
 
 	@Test
-    public void testKCMStop() throws UnsupportedEncodingException, URISyntaxException {
+    public void testKCMStop() {
         ObaStopRequest.Builder builder = new ObaStopRequest.Builder("1_29261");
         ObaStopRequest request = builder.build();
         ObaStopResponse response = request.call();
@@ -50,7 +47,7 @@ public class StopRequestTest extends ObaTestCase {
     }
 
 	@Test
-    public void testNewRequest() throws UnsupportedEncodingException, URISyntaxException {
+    public void testNewRequest() {
         // This is just to make sure we copy and call newRequest() at least once
         ObaStopRequest request = ObaStopRequest.newRequest("1_29261");
         assertNotNull(request);

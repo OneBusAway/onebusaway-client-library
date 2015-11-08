@@ -62,7 +62,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
         _assertHARTStopRequest();
     }
 
-    private void _assertHARTStopRequest() throws UnsupportedEncodingException, URISyntaxException {
+    private void _assertHARTStopRequest() throws URISyntaxException {
         ObaArrivalInfoRequest.Builder builder =
                 new ObaArrivalInfoRequest.Builder("Hillsborough Area Regional Transit_3105");
         ObaArrivalInfoRequest request = builder.build();
@@ -76,7 +76,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
         );
     }
 
-    public void testKCMStopResponseUsingRegion() throws Exception {
+    public void testKCMStopResponseUsingRegion() {
         // Test by setting region
         ObaRegion ps = MockRegion.getPugetSound();
         assertNotNull(ps);
@@ -84,7 +84,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
         _assertKCMStopResponse();
     }
 
-    private void _assertKCMStopResponse() throws UnsupportedEncodingException, URISyntaxException {
+    private void _assertKCMStopResponse() {
         ObaArrivalInfoResponse response =
                 new ObaArrivalInfoRequest.Builder("1_29261").build().call();
         assertOK(response);
@@ -111,7 +111,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
         _assertHARTStopResponse();
     }
 
-    private void _assertHARTStopResponse() throws UnsupportedEncodingException, URISyntaxException {
+    private void _assertHARTStopResponse() {
         ObaArrivalInfoResponse response =
                 new ObaArrivalInfoRequest.Builder("Hillsborough%20Area%20Regional%20Transit_3105").build().call();
         assertOK(response);
@@ -131,7 +131,7 @@ public class ArrivalInfoRequestTest extends ObaTestCase {
         assertTrue(nearbyStops.size() > 0);
     }
 
-    public void testNewRequestUsingRegion() throws Exception {
+    public void testNewRequestUsingRegion() throws UnsupportedEncodingException, URISyntaxException {
         // Test by setting region
         ObaRegion ps = MockRegion.getPugetSound();
         assertNotNull(ps);

@@ -34,8 +34,12 @@ public final class ObaRegionsRequest extends RequestBase implements
 
         private static URI URI;
 
-        public Builder() throws URISyntaxException {
-        	URI = new URI("http://regions.onebusaway.org/regions-v3.json");
+        public Builder() {
+            try {
+                URI = new URI("http://regions.onebusaway.org/regions-v3.json");
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
 
         public Builder(URI uri) {
@@ -51,9 +55,8 @@ public final class ObaRegionsRequest extends RequestBase implements
      * Helper method for constructing new instances.
      *
      * @return The new request instance.
-     * @throws URISyntaxException 
      */
-    public static ObaRegionsRequest newRequest() throws URISyntaxException {
+    public static ObaRegionsRequest newRequest() {
         return new Builder().build();
     }
 
@@ -62,7 +65,6 @@ public final class ObaRegionsRequest extends RequestBase implements
      * the requester to set the URI to retrieve the regions info
      * from
      *
-     * @param context The package context.
      * @param uri     URI to the regions file
      * @return The new request instance.
      */

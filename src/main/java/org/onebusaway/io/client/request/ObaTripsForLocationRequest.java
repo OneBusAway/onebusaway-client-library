@@ -15,11 +15,10 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.concurrent.Callable;
-
 import org.onebusaway.location.Location;
+
+import java.net.URI;
+import java.util.concurrent.Callable;
 
 /**
  * Search for active trips near a specific location
@@ -76,7 +75,7 @@ public final class ObaTripsForLocationRequest extends RequestBase
             return this;
         }
 
-        public ObaTripsForLocationRequest build() throws URISyntaxException {
+        public ObaTripsForLocationRequest build() {
             return new ObaTripsForLocationRequest(buildUri());
         }
     }

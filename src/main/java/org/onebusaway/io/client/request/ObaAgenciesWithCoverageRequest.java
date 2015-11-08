@@ -16,7 +16,6 @@
 package org.onebusaway.io.client.request;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 /**
@@ -38,7 +37,7 @@ public final class ObaAgenciesWithCoverageRequest extends RequestBase implements
             super(BASE_PATH + "/agencies-with-coverage.json");
         }
 
-        public ObaAgenciesWithCoverageRequest build() throws URISyntaxException {
+        public ObaAgenciesWithCoverageRequest build() {
             return new ObaAgenciesWithCoverageRequest(buildUri());
         }
     }
@@ -46,11 +45,9 @@ public final class ObaAgenciesWithCoverageRequest extends RequestBase implements
     /**
      * Helper method for constructing new instances.
      *
-     * @param context The package context.
      * @return The new request instance.
-     * @throws URISyntaxException 
      */
-    public static ObaAgenciesWithCoverageRequest newRequest() throws URISyntaxException {
+    public static ObaAgenciesWithCoverageRequest newRequest() {
         return new Builder().build();
     }
 

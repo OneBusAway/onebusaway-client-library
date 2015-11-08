@@ -15,14 +15,13 @@
  */
 package org.onebusaway.io.client.mock;
 
+import org.onebusaway.io.client.ObaConnection;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.onebusaway.io.client.ObaConnection;
 
 public class MockConnection implements ObaConnection {
 

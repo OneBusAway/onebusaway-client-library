@@ -15,15 +15,12 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-
 import org.onebusaway.io.client.request.ObaAgencyRequest;
 import org.onebusaway.io.client.request.ObaAgencyResponse;
 
 public class AgencyRequestTest extends ObaTestCase {
 
-    public void testKCMAgency() throws URISyntaxException, UnsupportedEncodingException {
+    public void testKCMAgency() {
         ObaAgencyRequest.Builder builder = new ObaAgencyRequest.Builder("1");
         ObaAgencyRequest request = builder.build();
         ObaAgencyResponse response = request.call();
@@ -33,7 +30,7 @@ public class AgencyRequestTest extends ObaTestCase {
         assertEquals("Metro Transit", response.getName());
     }
 
-    public void testNewRequest() throws UnsupportedEncodingException, URISyntaxException {
+    public void testNewRequest() {
         // This is just to make sure we copy and call newRequest() at least once
         ObaAgencyRequest request = ObaAgencyRequest.newRequest("1");
         assertNotNull(request);

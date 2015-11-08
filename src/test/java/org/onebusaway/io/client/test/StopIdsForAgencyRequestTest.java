@@ -15,9 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-
 import org.junit.Test;
 import org.onebusaway.io.client.request.ObaStopIdsForAgencyRequest;
 import org.onebusaway.io.client.request.ObaStopIdsForAgencyResponse;
@@ -25,7 +22,7 @@ import org.onebusaway.io.client.request.ObaStopIdsForAgencyResponse;
 public class StopIdsForAgencyRequestTest extends ObaTestCase {
 
 	@Test
-    public void testST() throws UnsupportedEncodingException, URISyntaxException {
+    public void testST() {
         ObaStopIdsForAgencyRequest.Builder builder =
                 new ObaStopIdsForAgencyRequest.Builder("40");
         ObaStopIdsForAgencyRequest request = builder.build();
@@ -38,7 +35,7 @@ public class StopIdsForAgencyRequestTest extends ObaTestCase {
     }
 
 	@Test
-    public void testNewRequest() throws UnsupportedEncodingException, URISyntaxException {
+    public void testNewRequest() {
         // This is just to make sure we copy and call newRequest() at least once
         ObaStopIdsForAgencyRequest request =
                 ObaStopIdsForAgencyRequest.newRequest("40");

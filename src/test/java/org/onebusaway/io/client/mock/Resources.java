@@ -15,20 +15,11 @@
  */
 package org.onebusaway.io.client.mock;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URI;
-import java.net.URISyntaxException;
+import org.onebusaway.io.client.ObaApi;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-
-import javax.ws.rs.core.UriBuilder;
-
-import org.onebusaway.io.client.ObaApi;
 
 public class Resources {
 

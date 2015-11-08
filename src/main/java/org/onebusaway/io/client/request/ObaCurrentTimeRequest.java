@@ -16,7 +16,6 @@
 package org.onebusaway.io.client.request;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 /**
@@ -38,7 +37,7 @@ public final class ObaCurrentTimeRequest extends RequestBase
             super(BASE_PATH + "/current-time.json");
         }
 
-        public ObaCurrentTimeRequest build() throws URISyntaxException {
+        public ObaCurrentTimeRequest build() {
             return new ObaCurrentTimeRequest(buildUri());
         }
     }
@@ -46,11 +45,9 @@ public final class ObaCurrentTimeRequest extends RequestBase
     /**
      * Helper method for constructing new instances.
      *
-     * @param context The package context.
      * @return The new request instance.
-     * @throws URISyntaxException 
      */
-    public static ObaCurrentTimeRequest newRequest() throws URISyntaxException {
+    public static ObaCurrentTimeRequest newRequest() {
         return new Builder().build();
     }
 

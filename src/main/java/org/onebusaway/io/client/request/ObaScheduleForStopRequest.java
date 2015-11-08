@@ -15,9 +15,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -37,7 +35,7 @@ public final class ObaScheduleForStopRequest extends RequestBase
 
     public static class Builder extends RequestBase.BuilderBase {
 
-        public Builder(String stopId) throws UnsupportedEncodingException {
+        public Builder(String stopId) {
             super(getPathWithId("/schedule-for-stop/", stopId));
         }
 
@@ -52,7 +50,7 @@ public final class ObaScheduleForStopRequest extends RequestBase
             return this;
         }
 
-        public ObaScheduleForStopRequest build() throws URISyntaxException {
+        public ObaScheduleForStopRequest build() {
             return new ObaScheduleForStopRequest(buildUri());
         }
     }

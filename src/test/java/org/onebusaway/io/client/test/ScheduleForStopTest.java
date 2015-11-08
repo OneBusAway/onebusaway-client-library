@@ -15,16 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.TimeZone;
-
 import org.junit.Test;
 import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.elements.ObaRegion;
@@ -33,6 +23,10 @@ import org.onebusaway.io.client.elements.ObaStop;
 import org.onebusaway.io.client.mock.MockRegion;
 import org.onebusaway.io.client.request.ObaScheduleForStopRequest;
 import org.onebusaway.io.client.request.ObaScheduleForStopResponse;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 
 @SuppressWarnings("serial")
 public class ScheduleForStopTest extends ObaTestCase {
@@ -63,7 +57,7 @@ public class ScheduleForStopTest extends ObaTestCase {
     }
 
     @Test
-    public void testKCMStop() throws UnsupportedEncodingException, URISyntaxException {
+    public void testKCMStop() {
         ObaScheduleForStopResponse response =
                 new ObaScheduleForStopRequest.Builder("1_75403")
                         .build()

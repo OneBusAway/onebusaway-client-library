@@ -16,6 +16,13 @@
  */
 package org.onebusaway.io.client.util;
 
+import org.onebusaway.io.client.elements.ObaRegion;
+import org.onebusaway.io.client.elements.ObaRegionElement;
+import org.onebusaway.io.client.request.ObaRegionsRequest;
+import org.onebusaway.io.client.request.ObaRegionsResponse;
+import org.onebusaway.location.Location;
+
+import javax.ws.rs.core.UriBuilder;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -24,14 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.ws.rs.core.UriBuilder;
-
-import org.onebusaway.io.client.elements.ObaRegion;
-import org.onebusaway.io.client.elements.ObaRegionElement;
-import org.onebusaway.io.client.request.ObaRegionsRequest;
-import org.onebusaway.io.client.request.ObaRegionsResponse;
-import org.onebusaway.location.Location;
 
 public class RegionUtils {
 
@@ -268,11 +267,8 @@ public class RegionUtils {
             System.out.println("Regions list retrieved from database was null.");
         }
 
-        try {
-			results = RegionUtils.getRegionsFromServer();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
+        results = RegionUtils.getRegionsFromServer();
+
         if (results == null || results.isEmpty()) {
         	System.out.println("Regions list retrieved from server was null or empty.");
 
@@ -433,7 +429,7 @@ public class RegionUtils {
     	return null;
     }
 
-    private synchronized static ArrayList<ObaRegion> getRegionsFromServer() throws URISyntaxException {
+    private synchronized static ArrayList<ObaRegion> getRegionsFromServer() {
         ObaRegionsResponse response = ObaRegionsRequest.newRequest().call();
         return new ArrayList<ObaRegion>(Arrays.asList(response.getRegions()));
     }

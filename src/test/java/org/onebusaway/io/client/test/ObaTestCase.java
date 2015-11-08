@@ -15,11 +15,12 @@
  */
 package org.onebusaway.io.client.test;
 
+import junit.framework.TestCase;
 import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.mock.ObaMock;
 import org.onebusaway.io.client.request.ObaResponse;
 
-import junit.framework.TestCase;
+import java.net.URISyntaxException;
 
 public abstract class ObaTestCase extends TestCase {
 
@@ -38,8 +39,12 @@ public abstract class ObaTestCase extends TestCase {
 
         /*
          * Set to the mock Github URL where the test responses are remotely stored
-         */        
-        ObaApi.getDefaultContext().setBaseUrl(DEFAULT_BASE_URL);
+         */
+        try {
+            ObaApi.getDefaultContext().setBaseUrl(DEFAULT_BASE_URL);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

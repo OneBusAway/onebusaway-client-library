@@ -15,8 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.net.URISyntaxException;
-
 import org.junit.Test;
 import org.onebusaway.io.client.elements.ObaTripDetails;
 import org.onebusaway.io.client.request.ObaTripsForLocationRequest;
@@ -27,7 +25,7 @@ import org.onebusaway.location.Location;
 public class TripsForLocationTest extends ObaTestCase {
 
 	@Test
-    public void test1() throws URISyntaxException {
+    public void test1() {
         final Location pt = LocationUtil.makeLocation(47.653, -122.307);
 
         ObaTripsForLocationRequest.Builder builder =

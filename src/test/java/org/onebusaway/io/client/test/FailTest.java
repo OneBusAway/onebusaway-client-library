@@ -15,11 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.concurrent.Callable;
-
 import org.junit.Test;
 import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.request.ObaResponse;
@@ -27,10 +22,13 @@ import org.onebusaway.io.client.request.ObaStopRequest;
 import org.onebusaway.io.client.request.ObaStopResponse;
 import org.onebusaway.io.client.request.RequestBase;
 
+import java.net.URI;
+import java.util.concurrent.Callable;
+
 public class FailTest extends ObaTestCase {
 
 	@Test
-    public void test404_1() throws UnsupportedEncodingException, URISyntaxException {
+    public void test404_1() {
         ObaStopResponse response = ObaStopRequest.newRequest("404test").call();
         assertNotNull(response);
         // Right now this is what is in the test response...
@@ -39,7 +37,7 @@ public class FailTest extends ObaTestCase {
 
     // This is a real 404
 	@Test
-    public void test404_2() throws URISyntaxException {
+    public void test404_2() {
         BadResponse response =
                 new BadRequest.Builder("/foo/1_29261.json").build().call();
         assertNotNull(response);
@@ -47,7 +45,7 @@ public class FailTest extends ObaTestCase {
     }
 
 	@Test
-    public void testBadJson() throws URISyntaxException {
+    public void testBadJson() {
         BadResponse response =
                 new BadRequest.Builder("/stop/1_29261.xml").build().call();
         assertNotNull(response);
@@ -79,7 +77,7 @@ public class FailTest extends ObaTestCase {
                 super(BASE_PATH + path);
             }
 
-            public BadRequest build() throws URISyntaxException {
+            public BadRequest build() {
                 return new BadRequest(buildUri());
             }
         }

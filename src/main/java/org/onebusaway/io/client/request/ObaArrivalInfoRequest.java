@@ -16,9 +16,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 public final class ObaArrivalInfoRequest extends RequestBase implements
@@ -30,16 +28,16 @@ public final class ObaArrivalInfoRequest extends RequestBase implements
 
     public static class Builder extends RequestBase.BuilderBase {
 
-        public Builder(String stopId) throws UnsupportedEncodingException {
+        public Builder(String stopId) {
             super(getPathWithId("/arrivals-and-departures-for-stop/", stopId));
         }
 
-        public Builder(String stopId, int minutesAfter) throws UnsupportedEncodingException {
+        public Builder(String stopId, int minutesAfter) {
             super(getPathWithId("/arrivals-and-departures-for-stop/", stopId));
             mBuilder.queryParam("minutesAfter", String.valueOf(minutesAfter));
         }
 
-        public ObaArrivalInfoRequest build() throws URISyntaxException {
+        public ObaArrivalInfoRequest build() {
             return new ObaArrivalInfoRequest(buildUri());
         }
     }
@@ -47,28 +45,21 @@ public final class ObaArrivalInfoRequest extends RequestBase implements
     /**
      * Helper method for constructing new instances.
      *
-     * @param context The package context.
      * @param stopId  The stop Id to request.
      * @return The new request instance.
-     * @throws UnsupportedEncodingException 
-     * @throws URISyntaxException 
      */
-    public static ObaArrivalInfoRequest newRequest(String stopId) throws UnsupportedEncodingException, URISyntaxException {
+    public static ObaArrivalInfoRequest newRequest(String stopId) {
         return new Builder(stopId).build();
     }
 
     /**
      * Helper method for constructing new instances.
      *
-     * @param context      The package context.
      * @param stopId       The stop Id to request.
      * @param minutesAfter includes vehicles arriving or departing in the next minutesAfter minutes
      * @return The new request instance.
-     * @throws UnsupportedEncodingException 
-     * @throws URISyntaxException 
      */
-    public static ObaArrivalInfoRequest newRequest(String stopId,
-            int minutesAfter) throws UnsupportedEncodingException, URISyntaxException {
+    public static ObaArrivalInfoRequest newRequest(String stopId, int minutesAfter) {
         return new Builder(stopId, minutesAfter).build();
     }
 

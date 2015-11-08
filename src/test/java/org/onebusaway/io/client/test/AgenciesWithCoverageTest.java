@@ -15,8 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.net.URISyntaxException;
-
 import org.junit.Test;
 import org.onebusaway.io.client.elements.ObaAgency;
 import org.onebusaway.io.client.elements.ObaAgencyWithCoverage;
@@ -28,12 +26,7 @@ public class AgenciesWithCoverageTest extends ObaTestCase {
 	@Test
     public void testRequest() {
         ObaAgenciesWithCoverageRequest request = null;
-		try {
-			request = ObaAgenciesWithCoverageRequest.newRequest();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        request = ObaAgenciesWithCoverageRequest.newRequest();
         ObaAgenciesWithCoverageResponse response = request.call();
         assertOK(response);
         final ObaAgencyWithCoverage[] list = response.getAgencies();
@@ -45,7 +38,7 @@ public class AgenciesWithCoverageTest extends ObaTestCase {
     }
 
 	@Test
-    public void testBuilder() throws URISyntaxException {
+    public void testBuilder() {
         ObaAgenciesWithCoverageRequest.Builder builder =
                 new ObaAgenciesWithCoverageRequest.Builder();
         ObaAgenciesWithCoverageRequest request = builder.build();

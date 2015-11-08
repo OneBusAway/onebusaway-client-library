@@ -16,16 +16,15 @@
 package org.onebusaway.io.client.test;
 
 import junit.framework.Assert;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.onebusaway.io.client.request.RequestBase;
 
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.onebusaway.io.client.request.RequestBase;
 
 public class UriAssert extends Assert {
 
@@ -104,7 +103,7 @@ public class UriAssert extends Assert {
     /**
      * Check request for matching Uri.
      *
-     * @param expectedUri The Uri the test should expect (query values are ignored, use
+     * @param expectedUriString The Uri the test should expect (query values are ignored, use
      *                    expectedQuery)
      * @throws URISyntaxException 
      */
@@ -115,7 +114,7 @@ public class UriAssert extends Assert {
     /**
      * Check request for matching Uri.
      *
-     * @param expectedUri   The Uri the test should expect (query values are ignored, use
+     * @param expectedUriString   The Uri the test should expect (query values are ignored, use
      *                      expectedQuery)
      * @param expectedQuery A Map of query key/values required to be in the Uri.
      *                      Use asterisk to require key, but ignore value. Order is irrelevant.

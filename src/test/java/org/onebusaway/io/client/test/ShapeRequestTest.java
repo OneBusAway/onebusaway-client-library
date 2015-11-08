@@ -15,19 +15,17 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import org.junit.Test;
 import org.onebusaway.io.client.request.ObaShapeRequest;
 import org.onebusaway.io.client.request.ObaShapeResponse;
 import org.onebusaway.location.Location;
 
+import java.util.List;
+
 public class ShapeRequestTest extends ObaTestCase {
 
 	@Test
-    public void testShape() throws URISyntaxException, UnsupportedEncodingException {
+    public void testShape() {
         ObaShapeRequest.Builder builder =
                 new ObaShapeRequest.Builder("1_40046045");
         ObaShapeRequest request = builder.build();
@@ -39,7 +37,7 @@ public class ShapeRequestTest extends ObaTestCase {
     }
 
 	@Test
-    public void testNewRequest() throws UnsupportedEncodingException, URISyntaxException {
+    public void testNewRequest() {
         // This is just to make sure we copy and call newRequest() at least once
         ObaShapeRequest request = ObaShapeRequest.newRequest("1_40046045");
         assertNotNull(request);

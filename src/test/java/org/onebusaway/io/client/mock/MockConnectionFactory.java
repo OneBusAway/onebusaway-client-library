@@ -15,19 +15,15 @@
  */
 package org.onebusaway.io.client.mock;
 
+import org.onebusaway.io.client.ObaConnection;
+import org.onebusaway.io.client.ObaConnectionFactory;
+
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.ws.rs.core.UriBuilder;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.onebusaway.io.client.ObaConnection;
-import org.onebusaway.io.client.ObaConnectionFactory;
 
 public class MockConnectionFactory implements ObaConnectionFactory {
 

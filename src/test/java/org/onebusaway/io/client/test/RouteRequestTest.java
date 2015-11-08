@@ -15,9 +15,6 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-
 import org.junit.Test;
 import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.elements.ObaAgency;
@@ -30,7 +27,7 @@ import org.onebusaway.io.client.request.ObaRouteResponse;
 public class RouteRequestTest extends ObaTestCase {
 
 	@Test
-    public void testKCMRoute() throws UnsupportedEncodingException, URISyntaxException {
+    public void testKCMRoute() {
         String defaultRouteLineColor = "00F";
         String defaultRouteTextColor = "ff000000";
         ObaRouteRequest.Builder builder = new ObaRouteRequest.Builder("1_10");
@@ -60,14 +57,14 @@ public class RouteRequestTest extends ObaTestCase {
     }
 
 	@Test
-    public void testNewRequest() throws UnsupportedEncodingException, URISyntaxException {
+    public void testNewRequest() {
         // This is just to make sure we copy and call newRequest() at least once
         ObaRouteRequest request = ObaRouteRequest.newRequest("1_10");
         assertNotNull(request);
     }
 
 	@Test
-    public void testHARTRoute() throws URISyntaxException, UnsupportedEncodingException {
+    public void testHARTRoute() {
         // Test by setting region
         ObaRegion tampa = MockRegion.getTampa();
         assertNotNull(tampa);

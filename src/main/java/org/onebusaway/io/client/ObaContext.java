@@ -15,13 +15,13 @@
  */
 package org.onebusaway.io.client;
 
+import org.onebusaway.io.client.elements.ObaRegion;
+
+import javax.ws.rs.core.UriBuilder;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import javax.ws.rs.core.UriBuilder;
-
-import org.onebusaway.io.client.elements.ObaRegion;
 
 public class ObaContext {
 
@@ -89,8 +89,19 @@ public class ObaContext {
      * Used by external classes to set the base URL
      * @param url
      */
-    public void setBaseUrl(String url) {
-    	mBaseUrl = url;
+    public void setBaseUrl(String url) throws URISyntaxException {
+        mBaseUrl = url;
+
+        // Test parsing the URL that's passed in here, so we can throw the exception now if its bad
+        try {
+            // URI.parse() doesn't tell us if the scheme is missing, so use URL() instead (#126)
+            URL test = new URL(mBaseUrl);
+        } catch (MalformedURLException e) {
+            // Assume HTTP scheme, since without a scheme the Uri won't parse the authority
+            mBaseUrl = "http://" + mBaseUrl;
+        }
+
+        new URI(mBaseUrl);
     }
 
     /**
@@ -102,32 +113,19 @@ public class ObaContext {
      * returns, the builder will contain the full URL for the REST API endpoint (e.g., 
      * "http://api.tampa.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_1622.json"
      * 
-     * @throws URISyntaxException
      */
-    public void buildFullUrl(UriBuilder builder) throws URISyntaxException {
-//        URI baseUrl = null;
-//        System.out.println("Using region base URL '" + mRegion.getObaBaseUrl() + "'.");
-//
-//        baseUrl = Uri.parse(mRegion.getObaBaseUrl());
-//    
-//        // Copy partial path (if one exists) from the base URL
-//        UriBuilder path = new UriBuilder();
-//        path.encodedPath(baseUrl.getEncodedPath());
-//
-//        // Then, tack on the rest of the REST API method path from the Uri.Builder that was passed in
-//        path.appendEncodedPath(builder.build().getPath());
-//
-//        // Finally, overwrite builder that was passed in with the full URL
-//        builder.scheme(baseUrl.getScheme());
-//        builder.encodedAuthority(baseUrl.getEncodedAuthority());
-//        builder.encodedPath(path.build().getEncodedPath());
-	      URI baseUrl = null;
+    public void buildFullUrl(UriBuilder builder) {
+        URI baseUrl = null;
 	      
 	      if (mRegion != null) {
 	    	  System.out.println("Using region base URL '" + mRegion.getObaBaseUrl() + "'.");
-	    	  baseUrl = new URI(mRegion.getObaBaseUrl());
-	      } else {
-	    	  try {
+              try {
+                  baseUrl = new URI(mRegion.getObaBaseUrl());
+              } catch (URISyntaxException e) {
+                  e.printStackTrace();
+              }
+          } else {
+              try {
                   // URI.parse() doesn't tell us if the scheme is missing, so use URL() instead (#126)
                   URL url = new URL(mBaseUrl);
               } catch (MalformedURLException e) {
@@ -135,9 +133,13 @@ public class ObaContext {
             	  mBaseUrl = "http://" + mBaseUrl;
               }
 
-              baseUrl = new URI(mBaseUrl);
-	    	  System.out.println("Using set base URL - " + baseUrl);
-	      }
+              try {
+                  baseUrl = new URI(mBaseUrl);
+              } catch (URISyntaxException e) {
+                  e.printStackTrace();
+              }
+              System.out.println("Using set base URL - " + baseUrl);
+          }
 	  
 	      // Copy partial path (if one exists) from the base URL
 	      UriBuilder path = UriBuilder.fromPath(baseUrl.getPath());

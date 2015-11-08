@@ -15,9 +15,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 /**
@@ -34,11 +32,11 @@ public final class ObaStopRequest extends RequestBase implements Callable<ObaSto
 
     public static class Builder extends RequestBase.BuilderBase {
 
-        public Builder(String stopId) throws UnsupportedEncodingException {
+        public Builder(String stopId) {
             super(getPathWithId("/stop/", stopId));
         }
 
-        public ObaStopRequest build() throws URISyntaxException {
+        public ObaStopRequest build() {
             return new ObaStopRequest(buildUri());
         }
     }
@@ -46,13 +44,10 @@ public final class ObaStopRequest extends RequestBase implements Callable<ObaSto
     /**
      * Helper method for constructing new instances.
      *
-     * @param context The package context.
      * @param stopId  The stopId to request.
      * @return The new request instance.
-     * @throws UnsupportedEncodingException 
-     * @throws URISyntaxException 
      */
-    public static ObaStopRequest newRequest(String stopId) throws UnsupportedEncodingException, URISyntaxException {
+    public static ObaStopRequest newRequest(String stopId) {
         return new Builder(stopId).build();
     }
 

@@ -1,7 +1,5 @@
 package org.onebusaway.io.client.test;
 
-import java.net.URISyntaxException;
-
 import org.junit.Test;
 import org.onebusaway.io.client.elements.ObaRegion;
 import org.onebusaway.io.client.request.ObaRegionsRequest;
@@ -13,7 +11,7 @@ import org.onebusaway.io.client.request.ObaRegionsResponse;
 public class RegionsTest extends ObaTestCase {
 
 	@Test
-    public void testRequest() throws URISyntaxException {
+    public void testRequest() {
         ObaRegionsRequest request =
                 ObaRegionsRequest.newRequest();
         ObaRegionsResponse response = request.call();
@@ -26,7 +24,7 @@ public class RegionsTest extends ObaTestCase {
     }
 
 	@Test
-    public void testBuilder() throws URISyntaxException {
+    public void testBuilder() {
         ObaRegionsRequest.Builder builder =
                 new ObaRegionsRequest.Builder();
         ObaRegionsRequest request = builder.build();

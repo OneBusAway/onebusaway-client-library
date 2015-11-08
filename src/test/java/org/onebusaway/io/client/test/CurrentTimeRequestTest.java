@@ -15,17 +15,14 @@
  */
 package org.onebusaway.io.client.test;
 
-import java.net.URISyntaxException;
-
 import org.junit.Test;
-import org.onebusaway.io.client.ObaApi;
 import org.onebusaway.io.client.request.ObaCurrentTimeRequest;
 import org.onebusaway.io.client.request.ObaCurrentTimeResponse;
 
 public class CurrentTimeRequestTest extends ObaTestCase {
 
 	@Test
-    public void testCurrentTime() throws URISyntaxException {
+    public void testCurrentTime() {
         ObaCurrentTimeRequest.Builder builder = new ObaCurrentTimeRequest.Builder();
         ObaCurrentTimeRequest request = builder.build();
         ObaCurrentTimeResponse response = request.call();
@@ -38,7 +35,7 @@ public class CurrentTimeRequestTest extends ObaTestCase {
     }
 
 	@Test
-    public void testNewRequest() throws URISyntaxException {
+    public void testNewRequest() {
         // This is just to make sure we copy and call newRequest() at least once
         ObaCurrentTimeRequest request = ObaCurrentTimeRequest.newRequest();
         assertNotNull(request);

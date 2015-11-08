@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import static org.onebusaway.io.client.util.ArrivalInfo.LongDescription.*;
 import static org.onebusaway.io.client.util.ArrivalInfo.Status.*;
 
 /**
@@ -101,6 +102,8 @@ public final class ArrivalInfo {
 
     private final String mStatusText;
 
+    private final String mLongDescription;
+
     private final Color mColor;
 
     private static final int ms_in_mins = 60 * 1000;
@@ -138,6 +141,8 @@ public final class ArrivalInfo {
 
         mStatusText = computeStatusLabel(info, now, predicted,
                 scheduledMins, predictedMins);
+
+        mLongDescription = computeLongDescription();
     }
 
     /**
@@ -235,7 +240,7 @@ public final class ArrivalInfo {
                 } else if (delay < 0) {
                     // Departing early
                     delay = -delay;
-                    sb.append(DEPARTED);
+                    sb.append(Status.DEPARTED);
                     sb.append((int) delay);
                     if (delay < 2) {
                         sb.append(MINUTE_EARLY);
@@ -255,6 +260,45 @@ public final class ArrivalInfo {
                 return SCHEDULED_DEPARTURE;
             }
         }
+    }
+
+    private String computeLongDescription() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ROUTE);
+        sb.append(SPACE);
+        sb.append(mInfo.getShortName());
+        sb.append(SPACE);
+        sb.append(mInfo.getHeadsign());
+        sb.append(SPACE);
+
+        if (mEta < 0) {
+            // Route just left
+            long invertEta = -mEta;
+            sb.append(LongDescription.DEPARTED);
+            sb.append(SPACE);
+            sb.append(invertEta);
+            sb.append(SPACE);
+            if (invertEta < 2) {
+                sb.append(MINUTE_AGO);
+            } else {
+                sb.append(MINUTES_AGO);
+            }
+        } else if (mEta == 0) {
+            // Route is now arriving
+            sb.append(IS_NOW_ARRIVING);
+        } else {
+            // Route is arriving in future
+            sb.append(IS_ARRIVING_IN);
+            sb.append(SPACE);
+            sb.append(mEta);
+            sb.append(SPACE);
+            if (mEta < 2) {
+                sb.append(MINUTE);
+            } else {
+                sb.append(MINUTES);
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -297,11 +341,11 @@ public final class ArrivalInfo {
         return mEta;
     }
 
-    final long getDisplayTime() {
+    public final long getDisplayTime() {
         return mDisplayTime;
     }
 
-    final String getStatusText() {
+    public final String getStatusText() {
         return mStatusText;
     }
 
@@ -310,7 +354,7 @@ public final class ArrivalInfo {
      *
      * @return the color that should be used for the arrival time
      */
-    final Color getColor() {
+    public final Color getColor() {
         return mColor;
     }
 
@@ -319,8 +363,19 @@ public final class ArrivalInfo {
      *
      * @return true if there is real-time arrival info available for this trip, false if there is not
      */
-    final boolean getPredicted() {
+    public final boolean getPredicted() {
         return mPredicted;
+    }
+
+    /**
+     * Returns a long description of this arrival information that is suitable for reading to a user
+     * via a voice interface such as an IVR phone system
+     *
+     * @return a long description of this arrival information that is suitable for reading to a user
+     * via a voice interface such as an IVR phone system
+     */
+    public final String getLongDescription() {
+        return mLongDescription;
     }
 
     /**
@@ -334,5 +389,20 @@ public final class ArrivalInfo {
         String DEPARTED = "Departed ";
         String MINUTE_EARLY = " minute early";
         String MINUTES_EARLY = " minutes early";
+    }
+
+    /**
+     * Strings used to compose the long description of an arrival or departure
+     */
+    public interface LongDescription {
+        String ROUTE = "Route";
+        String SPACE = " ";
+        String DEPARTED = "departed";
+        String MINUTE_AGO = "minute ago";
+        String MINUTES_AGO = "minutes ago";
+        String IS_NOW_ARRIVING = "is now arriving";
+        String IS_ARRIVING_IN = "is arriving in";
+        String MINUTE = "minute";
+        String MINUTES = "minutes";
     }
 }

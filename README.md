@@ -1,5 +1,5 @@
 # onebusaway-client-library [![Build Status](https://travis-ci.org/OneBusAway/onebusaway-client-library.svg?branch=master)](https://travis-ci.org/OneBusAway/onebusaway-client-library)
-A Java library that makes it easy to call the OneBusAway REST APIs (http://developer.onebusaway.org/modules/onebusaway-application-modules/current/api/where/index.html)
+A Java library that makes it easy to call the [OneBusAway REST APIs](http://developer.onebusaway.org/modules/onebusaway-application-modules/current/api/where/index.html)
 
 ### Requirements
 

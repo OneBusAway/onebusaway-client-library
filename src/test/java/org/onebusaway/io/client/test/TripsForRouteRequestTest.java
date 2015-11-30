@@ -56,25 +56,14 @@ public class TripsForRouteRequestTest extends ObaTestCase {
         assertNotNull(tampa);
         ObaApi.getDefaultContext().setRegion(tampa);
 
-        // No trip status included
-        ObaTripsForRouteResponse response =
-                new ObaTripsForRouteRequest.Builder(TEST_ROUTE_ID)
-                        .build()
-                        .call();
-        assertOK(response);
-        ObaTripDetails[] trips = response.getTrips();
-
-        assertEquals("Hillsborough Area Regional Transit_98682", trips[0].getId());
-        assertNull(trips[0].getStatus());
-
         // Include vehicles status
-        response =
+        ObaTripsForRouteResponse response =
                 new ObaTripsForRouteRequest.Builder(TEST_ROUTE_ID)
                         .setIncludeStatus(true)
                         .build()
                         .call();
         assertOK(response);
-        trips = response.getTrips();
+        ObaTripDetails[] trips = response.getTrips();
 
         assertEquals("Hillsborough Area Regional Transit_101446", trips[0].getId());
         assertEquals(1444073087126L, trips[0].getStatus().getLastUpdateTime());

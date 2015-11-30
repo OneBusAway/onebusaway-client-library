@@ -15,15 +15,16 @@
  */
 package org.onebusaway.io.client.elements;
 
+import org.onebusaway.io.client.util.LocationUtil;
 import org.onebusaway.location.Location;
 
 public interface ObaTripStatus {
 
     public static final class Position {
 
-        private final double lat = 0;
+        private double lat = 0;
 
-        private final double lon = 0;
+        private double lon = 0;
 
         public double getLat() {
             return lat;
@@ -34,10 +35,7 @@ public interface ObaTripStatus {
         }
 
         public Location getLocation() {
-        	Location l = new Location("");
-            l.setLatitude(lat);
-            l.setLongitude(lon);
-            return l;
+            return LocationUtil.makeLocation(lat, lon);
         }
     }
 

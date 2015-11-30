@@ -59,8 +59,8 @@ public final class ObaTripsForLocationRequest extends RequestBase
          *
          * @return This object.
          */
-        public Builder setIncludeTrips(boolean includeTrips) {
-            mBuilder.queryParam("includeTrips", String.valueOf(includeTrips));
+        public Builder setIncludeTrip(boolean includeTrip) {
+            mBuilder.queryParam("includeTrip", String.valueOf(includeTrip));
             return this;
         }
 
@@ -70,8 +70,8 @@ public final class ObaTripsForLocationRequest extends RequestBase
          *
          * @return This object.
          */
-        public Builder setIncludeSchedules(boolean includeSchedules) {
-            mBuilder.queryParam("includeSchedules", String.valueOf(includeSchedules));
+        public Builder setIncludeSchedule(boolean includeSchedule) {
+            mBuilder.queryParam("includeSchedule", String.valueOf(includeSchedule));
             return this;
         }
 

@@ -36,6 +36,9 @@ public class RegionUtils {
 
     private static final String TAG = "RegionUtils";
 
+    public static final double METERS_TO_MILES = 0.000621371;
+    private static final int DISTANCE_LIMITER = 100;  // miles
+
     /**
      * Get the closest region from a list of regions and a given location
      *
@@ -44,10 +47,14 @@ public class RegionUtils {
      *
      * @param regions list of regions
      * @param loc     location
+     * @param enforceThreshold true if the DISTANCE_LIMITER threshold should be enforced, false if
+     *                         it should not
      * @return the closest region to the given location from the list of regions, or null if a
-     * closest region couldn't be found
+     * enforceThreshold is true and the closest region exceeded DISTANCE_LIMITER threshold or a
+     * region couldn't be found
      */
-    public static ObaRegion getClosestRegion(ArrayList<ObaRegion> regions, Location loc) {
+    public static ObaRegion getClosestRegion(ArrayList<ObaRegion> regions, Location loc,
+                                             boolean enforceThreshold) {
         if (loc == null) {
             return null;
         }
@@ -57,7 +64,7 @@ public class RegionUtils {
 
         NumberFormat fmt = NumberFormat.getInstance();
         if (fmt instanceof DecimalFormat) {
-            ((DecimalFormat) fmt).setMaximumFractionDigits(1);
+            fmt.setMaximumFractionDigits(1);
         }
         double miles;
 
@@ -75,11 +82,18 @@ public class RegionUtils {
             	System.err.println("Couldn't measure distance to region '" + region.getName() + "'");
                 continue;
             }
-            miles = distToRegion * 0.000621371;
+            miles = distToRegion * METERS_TO_MILES;
             System.out.println("Region '" + region.getName() + "' is " + fmt.format(miles) + " miles away");
             if (distToRegion < minDist) {
                 closestRegion = region;
                 minDist = distToRegion;
+            }
+        }
+        if (enforceThreshold) {
+            if (minDist * METERS_TO_MILES < DISTANCE_LIMITER) {
+                return closestRegion;
+            } else {
+                return null;
             }
         }
 

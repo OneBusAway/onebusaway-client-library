@@ -1,10 +1,10 @@
 package org.onebusaway.io.client.mock;
 
-import java.util.ArrayList;
-
 import org.onebusaway.io.client.elements.ObaRegion;
 import org.onebusaway.io.client.elements.ObaRegionElement;
 import org.onebusaway.io.client.util.RegionUtils;
+
+import java.util.ArrayList;
 
 /**
  * Provides mock region information
@@ -12,11 +12,11 @@ import org.onebusaway.io.client.util.RegionUtils;
 public class MockRegion {
 
     // Production region IDs shouldn't change, so these values should match the regions-v3.json API response
-    private static final int TAMPA_REGION_ID = 0;
+    public static final int TAMPA_REGION_ID = 0;
 
-    private static final int PUGET_SOUND_REGION_ID = 1;
+    public static final int PUGET_SOUND_REGION_ID = 1;
 
-    private static final int ATLANTA_REGION_ID = 3;
+    public static final int ATLANTA_REGION_ID = 3;
 
     public static ObaRegion getTampa() {
         ArrayList<ObaRegion> regions = RegionUtils.getRegionsFromResources();
@@ -162,6 +162,62 @@ public class MockRegion {
                 "test@test.org",
                 true,
                 true,
+                false,
+                null,
+                false,
+                null);
+    }
+
+    /**
+     * Returns a test version of the Tampa region without an OBA Discovery or Real-time APIs
+     *
+     * @return a test version of the Tampa region without an OBA Discovery or Real-time APIs
+     */
+    public static ObaRegion getRegionWithoutObaApis() {
+        ObaRegionElement.Bounds bound = new ObaRegionElement.Bounds(27.976910500000002, -82.445851,
+                0.5424609999999994, 0.576357999999999);
+        ObaRegionElement.Bounds[] bounds = new ObaRegionElement.Bounds[1];
+        bounds[0] = bound;
+
+        return new ObaRegionElement(
+                0,
+                "Test-RegionWithoutOBAApis",
+                true,
+                "http://api.tampa.onebusaway.org/api/",
+                null,
+                bounds,
+                "en_US",
+                "test@test.org",
+                false,
+                false,
+                false,
+                null,
+                false,
+                null);
+    }
+
+    /**
+     * Returns a test version of the Tampa region that is not active
+     *
+     * @return a test version of the Tampa region that is not active
+     */
+    public static ObaRegion getInactiveRegion() {
+        ObaRegionElement.Bounds bound = new ObaRegionElement.Bounds(27.976910500000002, -82.445851,
+                0.5424609999999994, 0.576357999999999);
+        ObaRegionElement.Bounds[] bounds = new ObaRegionElement.Bounds[1];
+        bounds[0] = bound;
+
+        return new ObaRegionElement(
+                0,
+                "Test-RegionWithoutOBAApis",
+                true,
+                "http://api.tampa.onebusaway.org/api/",
+                null,
+                bounds,
+                "en_US",
+                "test@test.org",
+                false,
+                false,
                 false,
                 null,
                 false,

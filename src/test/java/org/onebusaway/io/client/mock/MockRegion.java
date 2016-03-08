@@ -223,4 +223,32 @@ public class MockRegion {
                 false,
                 null);
     }
+
+    /**
+     * Returns a test version of the Tampa region without an ObaBaseUrl
+     *
+     * @return a test version of the Tampa region without an ObaBaseUrl
+     */
+    public static ObaRegion getRegionNoObaBaseUrl() {
+        ObaRegionElement.Bounds bound = new ObaRegionElement.Bounds(27.976910500000002, -82.445851,
+                0.5424609999999994, 0.576357999999999);
+        ObaRegionElement.Bounds[] bounds = new ObaRegionElement.Bounds[1];
+        bounds[0] = bound;
+
+        return new ObaRegionElement(
+                0,
+                "Test-NoObaBaseUrl",
+                true,
+                null,
+                null,
+                bounds,
+                "en_US",
+                "test@test.org",
+                true,
+                true,
+                false,
+                null,
+                false,
+                null);
+    }
 }

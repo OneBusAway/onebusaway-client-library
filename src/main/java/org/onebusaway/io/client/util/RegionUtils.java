@@ -255,6 +255,10 @@ public class RegionUtils {
         	System.out.println("Region '" + region.getName() + "' does not support OBA Realtime APIs.");
             return false;
         }
+        if (region.getObaBaseUrl() == null) {
+            System.out.println("Region '" + region.getName() + "' does not have a valid ObaBaseUrl.");
+            return false;
+        }
 
         return true;
     }

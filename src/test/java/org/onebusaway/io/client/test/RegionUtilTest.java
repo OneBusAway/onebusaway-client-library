@@ -149,6 +149,7 @@ public class RegionUtilTest extends ObaTestCase {
 
         assertFalse(RegionUtils.isRegionUsable(MockRegion.getRegionWithoutObaApis()));
         assertFalse(RegionUtils.isRegionUsable(MockRegion.getInactiveRegion()));
+        assertFalse(RegionUtils.isRegionUsable(MockRegion.getRegionNoObaBaseUrl()));
     }
 
     /**

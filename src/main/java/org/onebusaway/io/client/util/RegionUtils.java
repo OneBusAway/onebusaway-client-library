@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,7 +54,8 @@ public class RegionUtils {
      * enforceThreshold is true and the closest region exceeded DISTANCE_LIMITER threshold or a
      * region couldn't be found
      */
-    public static ObaRegion getClosestRegion(ArrayList<ObaRegion> regions, Location loc,
+    public static ObaRegion getClosestRegion(Collection<ObaRegion> regions,
+                                             Location loc,
                                              boolean enforceThreshold) {
         if (loc == null) {
             return null;

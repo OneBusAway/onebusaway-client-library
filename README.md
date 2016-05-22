@@ -3,7 +3,7 @@ A Java library that makes it easy to call the [OneBusAway REST APIs](http://deve
 
 ### Requirements
 
-You'll need [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
+You'll need [JDK 7 or higher](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
 ### Including this library in your application
 

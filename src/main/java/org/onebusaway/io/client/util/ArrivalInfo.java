@@ -49,7 +49,8 @@ public final class ArrivalInfo {
      * @return ArrayList of arrival info to be used with the adapter
      */
     public static final ArrayList<ArrivalInfo> convertObaArrivalInfo(ObaArrivalInfo[] arrivalInfo,
-                                                                     ArrayList<String> filter, long ms) {
+                                                                     ArrayList<String> filter, long ms,
+                                                                     boolean includeArrivalDepartureInStatusLabel) {
         final int len = arrivalInfo.length;
         ArrayList<ArrivalInfo> result = new ArrayList<ArrivalInfo>(len);
         if (filter != null && filter.size() > 0) {
@@ -57,14 +58,14 @@ public final class ArrivalInfo {
             for (int i = 0; i < len; ++i) {
                 ObaArrivalInfo arrival = arrivalInfo[i];
                 if (filter.contains(arrival.getRouteId())) {
-                    ArrivalInfo info = new ArrivalInfo(arrival, ms);
+                    ArrivalInfo info = new ArrivalInfo(arrival, ms, includeArrivalDepartureInStatusLabel);
                     result.add(info);
                 }
             }
         } else {
             // Add arrivals for all routes
             for (int i = 0; i < len; ++i) {
-                ArrivalInfo info = new ArrivalInfo(arrivalInfo[i], ms);
+                ArrivalInfo info = new ArrivalInfo(arrivalInfo[i], ms, includeArrivalDepartureInStatusLabel);
                 result.add(info);
             }
         }
@@ -110,7 +111,16 @@ public final class ArrivalInfo {
 
     private final boolean mPredicted;
 
-    public ArrivalInfo(ObaArrivalInfo info, long now) {
+    private final boolean mIsArrival;
+
+    /**
+     * @param includeArrivalDepartureInStatusLabel true if the arrival/departure label
+     *                                             should be
+     *                                             included in the status label false if it
+     *                                             should not
+     */
+    public ArrivalInfo(ObaArrivalInfo info, long now,
+                       boolean includeArrivalDepartureInStatusLabel) {
         mInfo = info;
         // First, all times have to have to be converted to 'minutes'
         final long nowMins = now / ms_in_mins;
@@ -119,9 +129,12 @@ public final class ArrivalInfo {
         if (info.getStopSequence() != 0) {
             scheduled = info.getScheduledArrivalTime();
             predicted = info.getPredictedArrivalTime();
+            mIsArrival = true;
         } else {
+            // Show departure time
             scheduled = info.getScheduledDepartureTime();
             predicted = info.getPredictedDepartureTime();
+            mIsArrival = false;
         }
 
         final long scheduledMins = scheduled / ms_in_mins;
@@ -140,7 +153,7 @@ public final class ArrivalInfo {
         mColor = computeColor(scheduledMins, predictedMins);
 
         mStatusText = computeStatusLabel(info, now, predicted,
-                scheduledMins, predictedMins);
+                scheduledMins, predictedMins, includeArrivalDepartureInStatusLabel);
 
         mLongDescription = computeLongDescription();
     }
@@ -192,11 +205,21 @@ public final class ArrivalInfo {
         }
     }
 
+    /**
+     * @param info
+     * @param now
+     * @param predicted
+     * @param scheduledMins
+     * @param predictedMins
+     * @param includeArrivalDeparture true if the arrival/departure label should be included, false
+     *                                if it should not
+     * @return
+     */
     private String computeStatusLabel(ObaArrivalInfo info,
                                       final long now,
                                       final long predicted,
                                       final long scheduledMins,
-                                      final long predictedMins) {
+                                      final long predictedMins, boolean includeArrivalDeparture) {
         ObaArrivalInfo.Frequency frequency = info.getFrequency();
 
         StringBuilder sb = new StringBuilder();
@@ -228,33 +251,102 @@ public final class ArrivalInfo {
             long delay = predictedMins - scheduledMins;
 
             if (mEta >= 0) {
-                // Bus is arriving
+                // Bus hasn't yet arrived/departed
                 return computeArrivalLabelFromDelay(delay);
             } else {
-                // Bus is departing
-                if (delay > 0) {
-                    // Departing delayed
-                    sb.append((int) delay);
-                    sb.append(Status.MINUTE_DELAY);
-                    return sb.toString();
-                } else if (delay < 0) {
-                    // Departing early
-                    delay = -delay;
-                    sb.append(Status.DEPARTED);
-                    sb.append((int) delay);
-                    if (delay < 2) {
-                        sb.append(MINUTE_EARLY);
+                /**
+                 * Arrival/departure time has passed
+                 */
+                if (!includeArrivalDeparture) {
+                    // Don't include "depart" or "arrive" in label
+                    if (delay > 0) {
+                        // Delayed
+                        sb.append((int) delay);
+                        sb.append(Status.MINUTE_DELAY);
+                        return sb.toString();
+                    } else if (delay < 0) {
+                        // Early
+                        delay = -delay;
+                        sb.append((int) delay);
+                        if (delay < 2) {
+                            sb.append(MINUTE_EARLY);
+                        } else {
+                            sb.append(MINUTES_EARLY);
+                        }
+                        return sb.toString();
                     } else {
-                        sb.append(MINUTES_EARLY);
+                        // On time
+                        return Status.ON_TIME;
                     }
-                    return sb.toString();
+                }
+
+                if (mIsArrival) {
+                    // Is an arrival time
+                    if (delay > 0) {
+                        // Arrived late
+                        sb.append(Status.ARRIVED);
+                        sb.append((int) delay);
+                        if (delay < 2) {
+                            sb.append(MINUTE_LATE);
+                        } else {
+                            sb.append(MINUTES_LATE);
+                        }
+                        return sb.toString();
+                    } else if (delay < 0) {
+                        // Arrived early
+                        delay = -delay;
+                        sb.append(Status.ARRIVED);
+                        sb.append((int) delay);
+                        if (delay < 2) {
+                            sb.append(MINUTE_EARLY);
+                        } else {
+                            sb.append(MINUTES_EARLY);
+                        }
+                        return sb.toString();
+                    } else {
+                        // Arrived on time
+                        sb.append(Status.ARRIVED);
+                        sb.append(Status.ON_TIME.toLowerCase());
+                        return sb.toString();
+                    }
                 } else {
-                    // Departing on time
-                    return Status.ON_TIME;
+                    // Is a departure time
+                    if (delay > 0) {
+                        // Departed late
+                        sb.append(Status.DEPARTED);
+                        sb.append((int) delay);
+                        if (delay < 2) {
+                            sb.append(MINUTE_LATE);
+                        } else {
+                            sb.append(MINUTES_LATE);
+                        }
+                        return sb.toString();
+                    } else if (delay < 0) {
+                        // Departed early
+                        delay = -delay;
+                        sb.append(Status.DEPARTED);
+                        sb.append((int) delay);
+                        if (delay < 2) {
+                            sb.append(MINUTE_EARLY);
+                        } else {
+                            sb.append(MINUTES_EARLY);
+                        }
+                        return sb.toString();
+                    } else {
+                        // Departed on time
+                        sb.append(Status.DEPARTED);
+                        sb.append(Status.ON_TIME);
+                        return sb.toString();
+                    }
                 }
             }
         } else {
-            if (mEta > 0) {
+            // Scheduled times
+            if (!includeArrivalDeparture) {
+                return SCHEDULED;
+            }
+
+            if (mIsArrival) {
                 return SCHEDULED_ARRIVAL;
             } else {
                 return SCHEDULED_DEPARTURE;
@@ -272,9 +364,13 @@ public final class ArrivalInfo {
         sb.append(SPACE);
 
         if (mEta < 0) {
-            // Route just left
+            // Route just arrived or departed
             long invertEta = -mEta;
-            sb.append(LongDescription.DEPARTED);
+            if (mIsArrival) {
+                sb.append(LongDescription.ARRIVED);
+            } else {
+                sb.append(LongDescription.DEPARTED);
+            }
             sb.append(SPACE);
             sb.append(invertEta);
             sb.append(SPACE);
@@ -284,11 +380,19 @@ public final class ArrivalInfo {
                 sb.append(MINUTES_AGO);
             }
         } else if (mEta == 0) {
-            // Route is now arriving
-            sb.append(IS_NOW_ARRIVING);
+            // Route is now arriving/departing
+            if (mIsArrival) {
+                sb.append(IS_NOW_ARRIVING);
+            } else {
+                sb.append(IS_NOW_DEPARTING);
+            }
         } else {
-            // Route is arriving in future
-            sb.append(IS_ARRIVING_IN);
+            // Route is arriving or departing in future
+            if (mIsArrival) {
+                sb.append(IS_ARRIVING_IN);
+            } else {
+                sb.append(IS_DEPARTING_IN);
+            }
             sb.append(SPACE);
             sb.append(mEta);
             sb.append(SPACE);
@@ -319,12 +423,12 @@ public final class ArrivalInfo {
     public static String computeArrivalLabelFromDelay(long delay) {
         StringBuilder sb = new StringBuilder();
         if (delay > 0) {
-            // Arriving delayed
+            // Delayed
             sb.append((int) delay);
             sb.append(Status.MINUTE_DELAY);
             return sb.toString();
         } else if (delay < 0) {
-            // Arriving early
+            // Early
             delay = -delay;
             sb.append((int) delay);
             if (delay < 2) {
@@ -334,7 +438,7 @@ public final class ArrivalInfo {
             }
             return sb.toString();
         } else {
-            // Arriving on time
+            // On time
             return Status.ON_TIME;
         }
     }
@@ -389,12 +493,16 @@ public final class ArrivalInfo {
      */
     public interface Status {
         String ON_TIME = "On time";
+        String SCHEDULED = "Scheduled";
         String SCHEDULED_ARRIVAL = "Scheduled arrival";
         String SCHEDULED_DEPARTURE = "Scheduled departure";
         String MINUTE_DELAY = " minute delay";
         String DEPARTED = "Departed ";
+        String ARRIVED = "Arrived ";
         String MINUTE_EARLY = " minute early";
         String MINUTES_EARLY = " minutes early";
+        String MINUTE_LATE = " minute late";
+        String MINUTES_LATE = " minutes late";
     }
 
     /**
@@ -404,10 +512,13 @@ public final class ArrivalInfo {
         String ROUTE = "Route";
         String SPACE = " ";
         String DEPARTED = "departed";
+        String ARRIVED = "arrived";
         String MINUTE_AGO = "minute ago";
         String MINUTES_AGO = "minutes ago";
         String IS_NOW_ARRIVING = "is now arriving";
+        String IS_NOW_DEPARTING = "is now departing";
         String IS_ARRIVING_IN = "is arriving in";
+        String IS_DEPARTING_IN = "is departing in";
         String MINUTE = "minute";
         String MINUTES = "minutes";
         String BASED_ON_SCHEDULE = "based on the schedule";

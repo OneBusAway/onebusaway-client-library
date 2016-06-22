@@ -460,6 +460,14 @@ public final class ArrivalInfo {
     }
 
     /**
+     * Returns true if this arrival info is for an arrival time, false if it is for a departure
+     * time
+     */
+    public final boolean isArrival() {
+        return mIsArrival;
+    }
+
+    /**
      * Returns the color that should be used for the arrival time
      *
      * @return the color that should be used for the arrival time

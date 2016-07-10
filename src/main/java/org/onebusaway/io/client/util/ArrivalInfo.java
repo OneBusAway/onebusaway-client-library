@@ -95,6 +95,23 @@ public final class ArrivalInfo {
         return -1;
     }
 
+    /**
+     * Generates text for the route shortname and headsign in the format of:
+     * "Route 6 South to Downtown/MTC"
+     *
+     * @param obaArrivalInfo
+     * @return text for the route shortname and headsign
+     */
+    public static String computeRouteAndHeadsign(ObaArrivalInfo obaArrivalInfo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ROUTE);
+        sb.append(SPACE);
+        sb.append(obaArrivalInfo.getShortName());
+        sb.append(SPACE);
+        sb.append(obaArrivalInfo.getHeadsign());
+        return sb.toString();
+    }
+
     private final ObaArrivalInfo mInfo;
 
     private final long mEta;
@@ -356,11 +373,7 @@ public final class ArrivalInfo {
 
     private String computeLongDescription() {
         StringBuilder sb = new StringBuilder();
-        sb.append(ROUTE);
-        sb.append(SPACE);
-        sb.append(mInfo.getShortName());
-        sb.append(SPACE);
-        sb.append(mInfo.getHeadsign());
+        sb.append(computeRouteAndHeadsign(mInfo));
         sb.append(SPACE);
 
         if (mEta < 0) {

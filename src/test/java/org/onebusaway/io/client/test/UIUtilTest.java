@@ -23,6 +23,7 @@ import org.onebusaway.io.client.mock.MockRegion;
 import org.onebusaway.io.client.request.ObaArrivalInfoRequest;
 import org.onebusaway.io.client.request.ObaArrivalInfoResponse;
 import org.onebusaway.io.client.util.ArrivalInfo;
+import org.onebusaway.io.client.util.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,6 +179,8 @@ public class UIUtilTest extends ObaTestCase {
         assertEquals("On time", arrivalInfo.get(29).getStatusText());
         assertEquals("9 minute delay", arrivalInfo.get(30).getStatusText());
         assertEquals("On time", arrivalInfo.get(31).getStatusText());
+
+        UIUtils.getArrivalInfoSummary(arrivalInfo, "\n");
     }
 
     /**

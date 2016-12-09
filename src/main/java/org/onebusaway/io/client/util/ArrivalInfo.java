@@ -95,6 +95,129 @@ public final class ArrivalInfo {
         return -1;
     }
 
+    /**
+     * Generates text for the route shortname and headsign in the format of:
+     * "Route 6 South to Downtown/MTC"
+     * <p>
+     * ...and adds it to the provided StringBuilder
+     *
+     * @param sb             StringBuilder to add the text to
+     * @param obaArrivalInfo
+     * @return text for the route shortname and headsign
+     */
+    public static void computeRouteAndHeadsign(StringBuilder sb, ObaArrivalInfo obaArrivalInfo) {
+        if (sb == null) {
+            throw new IllegalArgumentException("StringBuilder cannot be null");
+        }
+        sb.append(ROUTE);
+        sb.append(SPACE);
+        sb.append(obaArrivalInfo.getShortName());
+        sb.append(SPACE);
+        sb.append(obaArrivalInfo.getHeadsign());
+    }
+
+    /**
+     * Computes the "arrived/departed X minutes ago" text for the given arrival info
+     *
+     * @param sb          StringBuilder to add the text to
+     * @param arrivalInfo ArrivalInfo to compute the arrived/departed text for
+     */
+    public static void computeNegativeEtaText(StringBuilder sb, ArrivalInfo arrivalInfo) {
+        if (sb == null) {
+            throw new IllegalArgumentException("StringBuilder cannot be null");
+        }
+        long invertEta = -arrivalInfo.getEta();
+        if (arrivalInfo.isArrival()) {
+            sb.append(LongDescription.ARRIVED);
+        } else {
+            sb.append(LongDescription.DEPARTED);
+        }
+        sb.append(SPACE);
+        sb.append(invertEta);
+        sb.append(SPACE);
+        if (invertEta < 2) {
+            sb.append(MINUTE_AGO);
+        } else {
+            sb.append(MINUTES_AGO);
+        }
+    }
+
+    /**
+     * Computes the text for "is arriving/departing now" and adds it to the provided StringBuilder
+     *
+     * @param sb   StringBuilder to add the text to
+     * @param info Prediction info
+     */
+    public static void computeZeroEtaText(StringBuilder sb, ArrivalInfo info) {
+        if (sb == null) {
+            throw new IllegalArgumentException("StringBuilder cannot be null");
+        }
+        if (info.isArrival()) {
+            sb.append(IS_ARRIVING_NOW);
+        } else {
+            sb.append(IS_DEPARTING_NOW);
+        }
+    }
+
+    /**
+     * Computes the text for "is arriving/departing in X" and adds it to the provided StringBuilder
+     *
+     * @param sb   StringBuilder to add the text to
+     * @param info Prediction info
+     */
+    public static void computePositiveEtaText(StringBuilder sb, ArrivalInfo info) {
+        if (sb == null) {
+            throw new IllegalArgumentException("StringBuilder cannot be null");
+        }
+        if (info.isArrival()) {
+            sb.append(IS_ARRIVING_IN);
+        } else {
+            sb.append(IS_DEPARTING_IN);
+        }
+        sb.append(SPACE);
+        sb.append(info.getEta());
+    }
+
+    /**
+     * Computes singular "minute" or plural "minutes" text based on the ETA
+     *
+     * @param sb   StringBuilder to add the text to
+     * @param info Prediction info
+     */
+    public static void computeMinutesText(StringBuilder sb, ArrivalInfo info) {
+        if (sb == null) {
+            throw new IllegalArgumentException("StringBuilder cannot be null");
+        }
+        if (info.getEta() < 2) {
+            sb.append(MINUTE);
+        } else {
+            sb.append(MINUTES);
+        }
+    }
+
+    /**
+     * Computes if the text "according to the schedule" should be added
+     *
+     * @param sb         StringBuilder to add text to
+     * @param info       Prediction info
+     * @param includeAll true if the text should say "all according to...", false if it should ay "according to"
+     */
+    public static void computeScheduleText(StringBuilder sb, ArrivalInfo info, boolean includeAll) {
+        if (sb == null) {
+            throw new IllegalArgumentException("StringBuilder cannot be null");
+        }
+        if (!info.getPredicted()) {
+            sb.append(SPACE);
+
+            if (includeAll) {
+                sb.append(ALL);
+                sb.append(SPACE);
+            }
+
+            sb.append(BASED_ON_SCHEDULE);
+        }
+    }
+
     private final ObaArrivalInfo mInfo;
 
     private final long mEta;
@@ -356,60 +479,27 @@ public final class ArrivalInfo {
 
     private String computeLongDescription() {
         StringBuilder sb = new StringBuilder();
-        sb.append(ROUTE);
-        sb.append(SPACE);
-        sb.append(mInfo.getShortName());
-        sb.append(SPACE);
-        sb.append(mInfo.getHeadsign());
+        computeRouteAndHeadsign(sb, mInfo);
         sb.append(SPACE);
 
         if (mEta < 0) {
             // Route just arrived or departed
-            long invertEta = -mEta;
-            if (mIsArrival) {
-                sb.append(LongDescription.ARRIVED);
-            } else {
-                sb.append(LongDescription.DEPARTED);
-            }
-            sb.append(SPACE);
-            sb.append(invertEta);
-            sb.append(SPACE);
-            if (invertEta < 2) {
-                sb.append(MINUTE_AGO);
-            } else {
-                sb.append(MINUTES_AGO);
-            }
+            computeNegativeEtaText(sb, this);
         } else if (mEta == 0) {
             // Route is now arriving/departing
-            if (mIsArrival) {
-                sb.append(IS_NOW_ARRIVING);
-            } else {
-                sb.append(IS_NOW_DEPARTING);
-            }
+            computeZeroEtaText(sb, this);
         } else {
             // Route is arriving or departing in future
-            if (mIsArrival) {
-                sb.append(IS_ARRIVING_IN);
-            } else {
-                sb.append(IS_DEPARTING_IN);
-            }
+            computePositiveEtaText(sb, this);
             sb.append(SPACE);
-            sb.append(mEta);
-            sb.append(SPACE);
-            if (mEta < 2) {
-                sb.append(MINUTE);
-            } else {
-                sb.append(MINUTES);
-            }
+            computeMinutesText(sb, this);
         }
 
         // If its not real-time info, add statement about schedule
-        if (!mPredicted) {
-            sb.append(SPACE);
-            sb.append(BASED_ON_SCHEDULE);
-        }
+        computeScheduleText(sb, this, false);
         return sb.toString();
     }
+
 
     /**
      * Computes the arrival status label from the delay (i.e., schedule deviation), where positive
@@ -523,12 +613,16 @@ public final class ArrivalInfo {
         String ARRIVED = "arrived";
         String MINUTE_AGO = "minute ago";
         String MINUTES_AGO = "minutes ago";
-        String IS_NOW_ARRIVING = "is now arriving";
-        String IS_NOW_DEPARTING = "is now departing";
+        String IS_ARRIVING_NOW = "is arriving now";
+        String IS_DEPARTING_NOW = "is departing now";
         String IS_ARRIVING_IN = "is arriving in";
         String IS_DEPARTING_IN = "is departing in";
         String MINUTE = "minute";
         String MINUTES = "minutes";
         String BASED_ON_SCHEDULE = "based on the schedule";
+        String AND = "and";
+        String IN = "in";
+        String COMMA = ",";
+        String ALL = "all";
     }
 }

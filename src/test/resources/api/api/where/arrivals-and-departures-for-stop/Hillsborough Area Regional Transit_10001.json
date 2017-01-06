@@ -2078,6 +2078,67 @@
           "vehicleId": "Hillsborough Area Regional Transit_1012"
         },
         "vehicleId": "Hillsborough Area Regional Transit_1012"
+      },
+        {
+          "arrivalEnabled": true,
+          "blockTripSequence": 12,
+          "departureEnabled": true,
+          "distanceFromStop": 9789.631212305976,
+          "frequency": null,
+          "lastUpdateTime": 1438804537395,
+          "numberOfStopsAway": 33,
+          "predicted": false,
+          "predictedArrivalInterval": null,
+          "predictedArrivalTime": 0,
+          "predictedDepartureInterval": null,
+          "predictedDepartureTime": 0,
+          "routeId": "Hillsborough Area Regional Transit_9",
+          "routeLongName": "15th Street",
+          "routeShortName": "9",
+          "scheduledArrivalInterval": null,
+          "scheduledArrivalTime": 1438811000000,
+          "scheduledDepartureInterval": null,
+          "scheduledDepartureTime": 1438811000000,
+          "serviceDate": 1438747200000,
+          "situationIds": [],
+          "status": "default",
+          "stopId": "Hillsborough Area Regional Transit_6497",
+          "stopSequence": 0,
+          "tripHeadsign": "UATC to Downtown via 15th St",
+          "tripId": "Hillsborough Area Regional Transit_99312",
+          "tripStatus": {
+            "activeTripId": "Hillsborough Area Regional Transit_99282",
+            "blockTripSequence": 11,
+            "closestStop": "Hillsborough Area Regional Transit_6592",
+            "closestStopTimeOffset": 3,
+            "distanceAlongTrip": 11372.361150649085,
+            "frequency": null,
+            "lastKnownDistanceAlongTrip": 0,
+            "lastKnownLocation": {
+              "lat": 28.021263122558594,
+              "lon": -82.4384536743164
+            },
+            "lastKnownOrientation": 0,
+            "lastLocationUpdateTime": 0,
+            "lastUpdateTime": 1438804537395,
+            "nextStop": "Hillsborough Area Regional Transit_6592",
+            "nextStopTimeOffset": 3,
+            "orientation": 107.52754109715443,
+            "phase": "",
+            "position": {
+              "lat": 28.0249394967646,
+              "lon": -82.44112914250336
+            },
+            "predicted": false,
+            "scheduleDeviation": 0,
+            "scheduledDistanceAlongTrip": 11372.361150649085,
+            "serviceDate": 1438747200000,
+            "situationIds": [],
+            "status": "default",
+            "totalDistanceAlongTrip": 21051.99236295506,
+            "vehicleId": "Hillsborough Area Regional Transit_1012"
+          },
+          "vehicleId": "Hillsborough Area Regional Transit_1012"
       }
       ],
       "nearbyStopIds": [

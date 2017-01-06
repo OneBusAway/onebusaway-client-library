@@ -23,6 +23,7 @@ import org.onebusaway.io.client.mock.MockRegion;
 import org.onebusaway.io.client.request.ObaArrivalInfoRequest;
 import org.onebusaway.io.client.request.ObaArrivalInfoResponse;
 import org.onebusaway.io.client.util.ArrivalInfo;
+import org.onebusaway.io.client.util.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +82,9 @@ public class UIUtilTest extends ObaTestCase {
         assertEquals("Route 5 South to Downtown/MTC departed 1 minute ago", arrivalInfo.get(4).getLongDescription());
         // Arrivals and departures that will happen in the future
         assertEquals("On time", arrivalInfo.get(5).getStatusText());
-        assertEquals("Route 2 UATC to Downtown via Nebraska Ave is now departing", arrivalInfo.get(5).getLongDescription());
+        assertEquals("Route 2 UATC to Downtown via Nebraska Ave is departing now", arrivalInfo.get(5).getLongDescription());
         assertEquals("On time", arrivalInfo.get(6).getStatusText());
-        assertEquals("Route 18 South to UATC/Downtown/MTC is now arriving", arrivalInfo.get(6).getLongDescription());
+        assertEquals("Route 18 South to UATC/Downtown/MTC is arriving now", arrivalInfo.get(6).getLongDescription());
         assertEquals("5 minute delay", arrivalInfo.get(7).getStatusText());
         assertEquals("Route 12 North to University Area TC is arriving in 3 minutes", arrivalInfo.get(7).getLongDescription());
         assertEquals("On time", arrivalInfo.get(8).getStatusText());
@@ -219,5 +220,58 @@ public class UIUtilTest extends ObaTestCase {
         assertEquals(35, arrivalInfo.get(29).getEta());
         assertEquals(35, arrivalInfo.get(30).getEta());
         assertEquals(35, arrivalInfo.get(31).getEta());
+    }
+
+    /**
+     * Tests the summary of arrival info
+     */
+    public void testArrivalSummary() {
+        // Initial setup to get an ObaArrivalInfo object from a test response
+        ObaRegion tampa = MockRegion.getTampa();
+        assertNotNull(tampa);
+        ObaApi.getDefaultContext().setRegion(tampa);
+
+        ObaArrivalInfoResponse response =
+                new ObaArrivalInfoRequest.Builder("Hillsborough%20Area%20Regional%20Transit_10001").build().call();
+        assertOK(response);
+        ObaStop stop = response.getStop();
+        assertNotNull(stop);
+        assertEquals("Hillsborough Area Regional Transit_6497", stop.getId());
+        List<ObaRoute> routes = response.getRoutes(stop.getRouteIds());
+        assertTrue(routes.size() > 0);
+        ObaAgency agency = response.getAgency(routes.get(0).getAgencyId());
+        assertEquals("Hillsborough Area Regional Transit", agency.getId());
+
+        // Get the response
+        ObaArrivalInfo[] arrivals = response.getArrivalInfo();
+        assertNotNull(arrivals);
+
+        /**
+         * Labels with arrive/depart included, and time labels
+         */
+        boolean includeArriveDepartLabels = true;
+        ArrayList<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
+                response.getCurrentTime(), includeArriveDepartLabels);
+
+        final String SEPARATOR = "\n";
+        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR);
+        assertEquals("Route 9 Downtown to UATC via 15th St arrived 4 minutes ago and is arriving in 35 minutes" + SEPARATOR +
+                "Route 6 South to Downtown/MTC departed 3 minutes ago and is departing in 14 and 35 minutes" + SEPARATOR +
+                "Route 1 UATC to Downtown via Florida Ave departed 1 minute ago and is departing in 25 minutes" + SEPARATOR +
+                "Route 18 North to UATC/Livingston arrived 1 minute ago and is arriving in 28 and 32 minutes" + SEPARATOR +
+                "Route 5 South to Downtown/MTC departed 1 minute ago and is departing in 35 minutes" + SEPARATOR +
+                "Route 2 UATC to Downtown via Nebraska Ave is departing now and in 30 minutes" + SEPARATOR +
+                "Route 18 South to UATC/Downtown/MTC is arriving now and in 10 and 30 minutes" + SEPARATOR +
+                "Route 12 North to University Area TC is arriving in 3 and 26 minutes" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing in 5, 35, 85, and 90 minutes" + SEPARATOR +
+                "Route 12 South to Downtown/MTC is departing in 5 and 27 minutes" + SEPARATOR +
+                "Route 5 North to University Area TC is arriving in 6 and 32 minutes" + SEPARATOR +
+                "Route 6 North to University Area TC is arriving in 7 and 34 minutes" + SEPARATOR +
+                "Route 1 Downtown to UATC via Florida Ave is arriving in 17 and 34 minutes" + SEPARATOR +
+                "Route 45 North to University Area TC is arriving in 20 minutes" + SEPARATOR +
+                "Route 45 South to Westshore TC is departing in 20 minutes" + SEPARATOR +
+                        "Route 2 Downtown to UATC via Nebraska Ave is arriving in 23 minutes" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing in 108 minutes based on the schedule" + SEPARATOR
+                , summary);
     }
 }

@@ -22,10 +22,10 @@ import org.onebusaway.io.client.elements.ObaRoute;
 import org.onebusaway.io.client.elements.ObaStop;
 import org.onebusaway.util.comparators.AlphanumComparator;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import static org.onebusaway.io.client.util.ArrivalInfo.LongDescription.*;
+import static org.onebusaway.io.client.util.ArrivalInfo.*;
 
 /**
  * A class containing utility methods related to the user interface
@@ -158,5 +158,165 @@ public class UIUtils {
         return MyTextUtils.toTitleCase(longName);
     }
 
+    /**
+     * Generates a summary of arrival/departure information in the following format:
+     * <p>
+     * "The next bus on Route 45 university district east green lake is arriving in 2 minutes, and will arrive
+     * again in 10 minutes, 18 minutes, and in 32 minutes based on the schedule.  Route 5 to UATC will depart in 5
+     * minutes, and will depart again in 12 minutes based on the schedule, 20 minutes, and 35 minutes.
+     *
+     * @param arrivalInfo the arrival information to generate the summary text for
+     * @param separator   a string used as a separator between each arrival
+     * @return a summary of arrival/departure information, with each arrival info summary separated by the provided
+     * separator
+     */
+    public static final String getArrivalInfoSummary(List<ArrivalInfo> arrivalInfo, String separator) {
+        /**
+         * Create an ordered map to hold a grouping of route types, based on same route, headsign, arrival/departure,
+         * and real-time/scheduled.  Key is generated so arrivals of the same grouping in the text can be matched, and
+         * the value is a list of all the arrival info indexes that are in the same gruop.  After this mapping from key
+         * to list of arrival info indexes is generated, we can loop through the map and generate similar text for each
+         * group.
+         */
+        StringBuilder keyBuilder = new StringBuilder();
+        String key;
+        Map<String, List<Integer>> routeGroups = new LinkedHashMap<>(arrivalInfo.size());
+        int index = 0;
+        List<Integer> routeGroup;
 
+        for (ArrivalInfo ai : arrivalInfo) {
+            // Clear the key builder from the previous iteration
+            keyBuilder.setLength(0);
+
+            // Create a key for this arrival info using route, headsign, arrival/departure, and real-time/scheduled
+            ArrivalInfo.computeRouteAndHeadsign(keyBuilder, ai.getInfo());
+            keyBuilder.append(ai.isArrival());
+            keyBuilder.append(ai.getPredicted());
+            key = keyBuilder.toString();
+
+            routeGroup = routeGroups.get(key);
+
+            if (routeGroup == null) {
+                // Nothing yet for this key - create new list and add index for this arrival type to map
+                routeGroup = new ArrayList<>();
+                routeGroup.add(index);
+                routeGroups.put(key, routeGroup);
+            } else {
+                // Add this index to the list of arrivals of same route, headsign, arrival/departure, and real-time/sch
+                routeGroup.add(index);
+            }
+            index++;
+        }
+
+        StringBuilder output = new StringBuilder();
+
+        // Now we have a map with routes grouped by similar traits - generate the output text by looping through it
+        for (Map.Entry<String, List<Integer>> entry : routeGroups.entrySet()) {
+            routeGroup = entry.getValue();
+            // If there is only one element in the group, just add the long description
+            if (routeGroup.size() == 1) {
+                output.append(arrivalInfo.get(routeGroup.get(0)).getLongDescription());
+                output.append(separator);
+                continue;
+            }
+
+            // Only print headsign once
+            ArrivalInfo.computeRouteAndHeadsign(output, arrivalInfo.get(routeGroup.get(0)).getInfo());
+            output.append(SPACE);
+
+            // If there are multiple elements in the group, combine them all in one sentence
+            boolean firstPositiveEta = true;
+            boolean hadNowArriving = false;
+            int i = 0;
+            for (Integer arrivalIndex : routeGroup) {
+                if (arrivalInfo.get(arrivalIndex).getEta() < 0) {
+                    // Route just arrived or departed - don't aggregate this with now or upcoming
+                    computeNegativeEtaText(output, arrivalInfo.get(arrivalIndex));
+                    output.append(SPACE);
+                    output.append(AND);
+                    output.append(SPACE);
+                    i++;
+                    continue;
+                } else if (arrivalInfo.get(arrivalIndex).getEta() == 0) {
+                    // Route is arriving/departing now
+                    computeZeroEtaText(output, arrivalInfo.get(arrivalIndex));
+                    if (i < routeGroup.size() - 1) {
+                        // This isn't the last prediction for this route/headsign
+                        output.append(SPACE);
+                        output.append(AND);
+                        output.append(SPACE);
+                        output.append(IN);
+                        output.append(SPACE);
+                    }
+                    hadNowArriving = true;
+                    i++;
+                    continue;
+                } else if (arrivalInfo.get(arrivalIndex).getEta() > 0) {
+                    // Route is arriving or departing in future
+                    if (firstPositiveEta) {
+                        // This is the first future prediction
+                        if (hadNowArriving) {
+                            // Just add ETA
+                            output.append(arrivalInfo.get(arrivalIndex).getEta());
+                        } else {
+                            // Add "is arriving/departing in X" without "minutes"
+                            computePositiveEtaText(output, arrivalInfo.get(arrivalIndex));
+                        }
+
+                        if (i < routeGroup.size() - 2) {
+                            // This is before the second-to-last prediction, so add a comma and space before next one
+                            output.append(COMMA);
+                            output.append(SPACE);
+                        }
+
+                        firstPositiveEta = false;
+                    } else {
+                        // Just add ETA
+                        if (i == routeGroup.size() - 1) {
+                            // Last prediction - add "AND"
+                            if (!hasTrailingSpace(output)) {
+                                // If there isn't currently a trailing space, add one
+                                output.append(SPACE);
+                            }
+                            output.append(AND);
+                            output.append(SPACE);
+                        }
+                        output.append(arrivalInfo.get(arrivalIndex).getEta());
+
+                        if (i < routeGroup.size() - 1) {
+                            // This isn't the last prediction for this route/headsign
+                            output.append(COMMA);
+                            output.append(SPACE);
+                        }
+                    }
+
+                    if (i == routeGroup.size() - 1) {
+                        // This is the last prediction for this group - add "minute(s)" based on last ETA
+                        output.append(SPACE);
+                        computeMinutesText(output, arrivalInfo.get(arrivalIndex));
+                    }
+                }
+                i++;
+            }
+
+            computeScheduleText(output, arrivalInfo.get(routeGroup.size() - 1), true);
+
+            output.append(separator);
+        }
+
+        return output.toString();
+    }
+
+    /**
+     * Returns true if the last character in the provided StringBuilder is a space " ", false if it is not
+     *
+     * @param sb StringBuilder to check for the last character
+     * @return true if the last character in the provided StringBuilder is a space " ", false if it is not
+     */
+    private static boolean hasTrailingSpace(StringBuilder sb) {
+        if (sb == null || sb.length() == 0) {
+            return false;
+        }
+        return sb.substring(sb.length() - 1).equals(SPACE);
+    }
 }

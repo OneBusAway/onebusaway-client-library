@@ -240,14 +240,6 @@ public class UIUtils {
                 } else if (arrivalInfo.get(arrivalIndex).getEta() == 0) {
                     // Route is arriving/departing now
                     computeZeroEtaText(output, arrivalInfo.get(arrivalIndex));
-                    if (i < routeGroup.size() - 1) {
-                        // This isn't the last prediction for this route/headsign
-                        output.append(SPACE);
-                        output.append(AND);
-                        output.append(SPACE);
-                        output.append(IN);
-                        output.append(SPACE);
-                    }
                     hadNowArriving = true;
                     i++;
                     continue;
@@ -256,12 +248,27 @@ public class UIUtils {
                     if (firstPositiveEta) {
                         // This is the first future prediction
                         if (hadNowArriving) {
-                            // Just add ETA
+                            // Add " and again in <ETA>"
+                            output.append(SPACE);
+                            output.append(AND);
+                            output.append(SPACE);
+                            output.append(AGAIN);
+                            output.append(SPACE);
+                            output.append(IN);
+                            output.append(SPACE);
                             output.append(arrivalInfo.get(arrivalIndex).getEta());
                         } else {
-                            // Add "is arriving/departing in X" without "minutes"
-                            computePositiveEtaText(output, arrivalInfo.get(arrivalIndex));
+                            boolean again = false;
+                            if (i != 0) {
+                                // This isn't the first prediction - add the work "again"
+                                again = true;
+                            }
+
+                            // Add "is arriving/departing in X minutes"
+                            computePositiveEtaText(output, arrivalInfo.get(arrivalIndex), again);
                         }
+                        output.append(SPACE);
+                        computeMinutesText(output, arrivalInfo.get(arrivalIndex));
 
                         if (i < routeGroup.size() - 2) {
                             // This is before the second-to-last prediction, so add a comma and space before next one
@@ -282,18 +289,14 @@ public class UIUtils {
                             output.append(SPACE);
                         }
                         output.append(arrivalInfo.get(arrivalIndex).getEta());
+                        output.append(SPACE);
+                        computeMinutesText(output, arrivalInfo.get(arrivalIndex));
 
                         if (i < routeGroup.size() - 1) {
                             // This isn't the last prediction for this route/headsign
                             output.append(COMMA);
                             output.append(SPACE);
                         }
-                    }
-
-                    if (i == routeGroup.size() - 1) {
-                        // This is the last prediction for this group - add "minute(s)" based on last ETA
-                        output.append(SPACE);
-                        computeMinutesText(output, arrivalInfo.get(arrivalIndex));
                     }
                 }
                 i++;
@@ -318,5 +321,19 @@ public class UIUtils {
             return false;
         }
         return sb.substring(sb.length() - 1).equals(SPACE);
+    }
+
+    /**
+     * Returns true if the last characters in the provided StringBuilder are "minute(s)", false if it is not
+     *
+     * @param sb StringBuilder to check for the last characters
+     * @return true if the last characters in the provided StringBuilder are "minute(s)", false if it is not
+     */
+    private static boolean hasTrailingMinutes(StringBuilder sb) {
+        if (sb == null || sb.length() == 0) {
+            return false;
+        }
+        String output = sb.toString();
+        return output.endsWith(MINUTE) || output.endsWith(MINUTES);
     }
 }

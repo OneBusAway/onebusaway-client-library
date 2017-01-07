@@ -162,15 +162,24 @@ public final class ArrivalInfo {
      *
      * @param sb   StringBuilder to add the text to
      * @param info Prediction info
+     * @param addAgain true if the work "again" should be added ("is arriving/departing again in.."), false if it should not
      */
-    public static void computePositiveEtaText(StringBuilder sb, ArrivalInfo info) {
+    public static void computePositiveEtaText(StringBuilder sb, ArrivalInfo info, boolean addAgain) {
         if (sb == null) {
             throw new IllegalArgumentException("StringBuilder cannot be null");
         }
         if (info.isArrival()) {
-            sb.append(IS_ARRIVING_IN);
+            if (!addAgain) {
+                sb.append(IS_ARRIVING_IN);
+            } else {
+                sb.append(IS_ARRIVING_AGAIN_IN);
+            }
         } else {
-            sb.append(IS_DEPARTING_IN);
+            if (!addAgain) {
+                sb.append(IS_DEPARTING_IN);
+            } else {
+                sb.append(IS_DEPARTING_AGAIN_IN);
+            }
         }
         sb.append(SPACE);
         sb.append(info.getEta());
@@ -488,7 +497,7 @@ public final class ArrivalInfo {
             computeZeroEtaText(sb, this);
         } else {
             // Route is arriving or departing in future
-            computePositiveEtaText(sb, this);
+            computePositiveEtaText(sb, this, false);
             sb.append(SPACE);
             computeMinutesText(sb, this);
         }
@@ -614,11 +623,14 @@ public final class ArrivalInfo {
         String IS_ARRIVING_NOW = "is arriving now";
         String IS_DEPARTING_NOW = "is departing now";
         String IS_ARRIVING_IN = "is arriving in";
+        String IS_ARRIVING_AGAIN_IN = "is arriving again in";
         String IS_DEPARTING_IN = "is departing in";
+        String IS_DEPARTING_AGAIN_IN = "is departing again in";
         String MINUTE = "minute";
         String MINUTES = "minutes";
         String BASED_ON_SCHEDULE = "based on the schedule";
         String AND = "and";
+        String AGAIN = "again";
         String IN = "in";
         String COMMA = ",";
         String ALL = "all";

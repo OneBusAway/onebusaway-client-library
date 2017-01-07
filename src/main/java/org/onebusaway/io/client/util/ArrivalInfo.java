@@ -20,10 +20,8 @@ import org.onebusaway.io.client.elements.ObaArrivalInfo;
 
 import java.awt.*;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.*;
+import java.util.List;
 
 import static org.onebusaway.io.client.util.ArrivalInfo.LongDescription.*;
 import static org.onebusaway.io.client.util.ArrivalInfo.Status.*;
@@ -48,11 +46,11 @@ public final class ArrivalInfo {
      * @param ms          current time in milliseconds
      * @return ArrayList of arrival info to be used with the adapter
      */
-    public static final ArrayList<ArrivalInfo> convertObaArrivalInfo(ObaArrivalInfo[] arrivalInfo,
-                                                                     ArrayList<String> filter, long ms,
-                                                                     boolean includeArrivalDepartureInStatusLabel) {
+    public static final List<ArrivalInfo> convertObaArrivalInfo(ObaArrivalInfo[] arrivalInfo,
+                                                                List<String> filter, long ms,
+                                                                boolean includeArrivalDepartureInStatusLabel) {
         final int len = arrivalInfo.length;
-        ArrayList<ArrivalInfo> result = new ArrayList<ArrivalInfo>(len);
+        List<ArrivalInfo> result = new ArrayList<>(len);
         if (filter != null && filter.size() > 0) {
             // Only add routes that haven't been filtered out
             for (int i = 0; i < len; ++i) {

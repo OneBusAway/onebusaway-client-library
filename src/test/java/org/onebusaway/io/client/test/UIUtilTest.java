@@ -25,7 +25,6 @@ import org.onebusaway.io.client.request.ObaArrivalInfoResponse;
 import org.onebusaway.io.client.util.ArrivalInfo;
 import org.onebusaway.io.client.util.UIUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,7 +61,7 @@ public class UIUtilTest extends ObaTestCase {
          * Labels *with* arrive/depart included, and time labels
          */
         boolean includeArriveDepartLabels = true;
-        ArrayList<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
+        List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
                 response.getCurrentTime(), includeArriveDepartLabels);
 
         // Now confirm that we have the correct number of elements, and values for ETAs for the test
@@ -185,7 +184,7 @@ public class UIUtilTest extends ObaTestCase {
      * Validates the ETAs and number of arrivals for Tampa's University Area Transit Center.  This
      * data is used for a few tests and we want to make sure it's valid.
      */
-    private void validateUatcArrivalInfo(ArrayList<ArrivalInfo> arrivalInfo) {
+    private void validateUatcArrivalInfo(List<ArrivalInfo> arrivalInfo) {
         assertEquals(32, arrivalInfo.size());
 
         assertEquals(-4, arrivalInfo.get(0).getEta());
@@ -250,7 +249,7 @@ public class UIUtilTest extends ObaTestCase {
          * Labels with arrive/depart included, and time labels
          */
         boolean includeArriveDepartLabels = true;
-        ArrayList<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
+        List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
                 response.getCurrentTime(), includeArriveDepartLabels);
 
         final String SEPARATOR = "\n";

@@ -22,6 +22,7 @@ import org.onebusaway.io.client.elements.ObaRoute;
 import org.onebusaway.io.client.elements.ObaStop;
 import org.onebusaway.util.comparators.AlphanumComparator;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.onebusaway.io.client.util.ArrivalInfo.LongDescription.*;
@@ -159,6 +160,19 @@ public class UIUtils {
     }
 
     /**
+     * Returns the time formatting as "1:10pm" to be displayed as an absolute time for an
+     * arrival/departure
+     *
+     * @param time an arrival or departure time (e.g., from ArrivalInfo)
+     * @return the time formatting as "1:10pm" to be displayed as an absolute time for an
+     * arrival/departure
+     */
+    public static String formatTime(long time) {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("h:mm a");
+        return sdfDate.format(time);
+    }
+
+    /**
      * Generates a summary of arrival/departure information in the following format:
      * <p>
      * "The next bus on Route 45 university district east green lake is arriving in 2 minutes, and will arrive
@@ -231,7 +245,7 @@ public class UIUtils {
             for (Integer arrivalIndex : routeGroup) {
                 if (arrivalInfo.get(arrivalIndex).getEta() < 0) {
                     // Route just arrived or departed - don't aggregate this with now or upcoming
-                    computeNegativeEtaText(output, arrivalInfo.get(arrivalIndex));
+                    computeNegativeEtaText(output, arrivalInfo.get(arrivalIndex), true);
                     output.append(SPACE);
                     output.append(AND);
                     output.append(SPACE);

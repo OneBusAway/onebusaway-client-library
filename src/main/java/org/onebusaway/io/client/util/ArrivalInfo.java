@@ -119,8 +119,9 @@ public final class ArrivalInfo {
      *
      * @param sb          StringBuilder to add the text to
      * @param arrivalInfo ArrivalInfo to compute the arrived/departed text for
+     * @param clockTime   true if the time should be clock time like "10:05AM", or false if it should be an ETA like "in 5 minutes"
      */
-    public static void computeNegativeEtaText(StringBuilder sb, ArrivalInfo arrivalInfo) {
+    public static void computeNegativeEtaText(StringBuilder sb, ArrivalInfo arrivalInfo, boolean clockTime) {
         if (sb == null) {
             throw new IllegalArgumentException("StringBuilder cannot be null");
         }
@@ -131,12 +132,21 @@ public final class ArrivalInfo {
             sb.append(LongDescription.DEPARTED);
         }
         sb.append(SPACE);
-        sb.append(invertEta);
-        sb.append(SPACE);
-        if (invertEta < 2) {
-            sb.append(MINUTE_AGO);
+
+        if (clockTime) {
+            // e.g., 10:05 PM
+            sb.append(AT);
+            sb.append(SPACE);
+            sb.append(UIUtils.formatTime(arrivalInfo.getDisplayTime()));
         } else {
-            sb.append(MINUTES_AGO);
+            // ETA
+            sb.append(invertEta);
+            sb.append(SPACE);
+            if (invertEta < 2) {
+                sb.append(MINUTE_AGO);
+            } else {
+                sb.append(MINUTES_AGO);
+            }
         }
     }
 
@@ -491,7 +501,7 @@ public final class ArrivalInfo {
 
         if (mEta < 0) {
             // Route just arrived or departed
-            computeNegativeEtaText(sb, this);
+            computeNegativeEtaText(sb, this, true);
         } else if (mEta == 0) {
             // Route is now arriving/departing
             computeZeroEtaText(sb, this);
@@ -634,5 +644,6 @@ public final class ArrivalInfo {
         String IN = "in";
         String COMMA = ",";
         String ALL = "all";
+        String AT = "at";
     }
 }

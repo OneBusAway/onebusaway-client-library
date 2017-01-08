@@ -33,6 +33,8 @@ import static org.onebusaway.io.client.util.ArrivalInfo.*;
  */
 public class UIUtils {
 
+    static SimpleDateFormat mSdfDate;
+
     /**
      * Returns a comma-delimited list of route display names that serve a stop
      * <p/>
@@ -168,8 +170,10 @@ public class UIUtils {
      * arrival/departure
      */
     public static String formatTime(long time) {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("h:mm a");
-        return sdfDate.format(time);
+        if (mSdfDate == null) {
+            mSdfDate = new SimpleDateFormat("h:mm a");
+        }
+        return mSdfDate.format(time);
     }
 
     /**

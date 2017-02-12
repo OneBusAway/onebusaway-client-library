@@ -293,11 +293,12 @@ public class UIUtils {
                                 again = true;
                             }
 
-                            // Add "is arriving/departing in X minutes"
+                            // Add "is arriving/departing in X minutes (or 10:05 PM)"
                             computePositiveEtaText(output, arrivalInfo.get(arrivalIndex), again, clockTime);
                         }
-                        output.append(SPACE);
+
                         if (!clockTime) {
+                            output.append(SPACE);
                             computeMinutesText(output, arrivalInfo.get(arrivalIndex));
                         }
 

@@ -307,8 +307,6 @@ public class UIUtilTest extends ObaTestCase {
         List<ArrivalInfo> arrivalInfo;
         final String SEPARATOR = "\n";
 
-        // TODO - fix trailing space issue in UIUtils.getArrivalInfoSummary()
-
         // Clock time (instead of ETA)
         boolean clocktime = true;
         arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,

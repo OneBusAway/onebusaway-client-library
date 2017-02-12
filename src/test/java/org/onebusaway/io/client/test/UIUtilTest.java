@@ -307,7 +307,7 @@ public class UIUtilTest extends ObaTestCase {
         List<ArrivalInfo> arrivalInfo;
         final String SEPARATOR = "\n";
 
-        // TODO - finish changing the below tests pass for clock times, fix trailing space issue
+        // TODO - fix trailing space issue in UIUtils.getArrivalInfoSummary()
 
         // Clock time (instead of ETA)
         boolean clocktime = true;
@@ -315,22 +315,22 @@ public class UIUtilTest extends ObaTestCase {
                 response.getCurrentTime(), includeArriveDepartLabels, clocktime);
         String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime);
         assertEquals("Route 9 Downtown to UATC via 15th St arrived at 3:51 PM and is arriving again at 4:30 PM" + SEPARATOR +
-                        "Route 6 South to Downtown/MTC departed 3:52 PM and is departing again at 4:09 PM and 4:30 PM" + SEPARATOR +
+                        "Route 6 South to Downtown/MTC departed at 3:52 PM and is departing again at 4:09 PM and 4:30 PM" + SEPARATOR +
                         "Route 1 UATC to Downtown via Florida Ave departed at 3:54 PM and is departing again at 4:20 PM" + SEPARATOR +
                         "Route 18 North to UATC/Livingston arrived at 3:54 PM and is arriving again at 4:23 PM and 4:27 PM" + SEPARATOR +
                         "Route 5 South to Downtown/MTC departed at 3:54 PM and is departing again at 4:30 PM" + SEPARATOR +
-                        "Route 2 UATC to Downtown via Nebraska Ave is departing now and again in 30 minutes" + SEPARATOR +
-                        "Route 18 South to UATC/Downtown/MTC is arriving now and again in 10 minutes and 30 minutes" + SEPARATOR +
-                        "Route 12 North to University Area TC is arriving in 3 minutes and 26 minutes" + SEPARATOR +
-                        "Route 9 UATC to Downtown via 15th St is departing in 5 minutes, 35 minutes, 85 minutes, and 90 minutes" + SEPARATOR +
-                        "Route 12 South to Downtown/MTC is departing in 5 minutes and 27 minutes" + SEPARATOR +
-                        "Route 5 North to University Area TC is arriving in 6 minutes and 32 minutes" + SEPARATOR +
-                        "Route 6 North to University Area TC is arriving in 7 minutes and 34 minutes" + SEPARATOR +
-                        "Route 1 Downtown to UATC via Florida Ave is arriving in 17 minutes and 34 minutes" + SEPARATOR +
-                        "Route 45 North to University Area TC is arriving in 20 minutes" + SEPARATOR +
-                        "Route 45 South to Westshore TC is departing in 20 minutes" + SEPARATOR +
-                        "Route 2 Downtown to UATC via Nebraska Ave is arriving in 23 minutes" + SEPARATOR +
-                        "Route 9 UATC to Downtown via 15th St is departing in 108 minutes based on the schedule" + SEPARATOR
+                        "Route 2 UATC to Downtown via Nebraska Ave is departing now and again at 4:25 PM" + SEPARATOR +
+                        "Route 18 South to UATC/Downtown/MTC is arriving now and again at 4:05 PM and 4:25 PM" + SEPARATOR +
+                        "Route 12 North to University Area TC is arriving at 3:58 PM and 4:21 PM" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing at 4:00 PM, 4:30 PM, 5:20 PM, and 5:25 PM" + SEPARATOR +
+                        "Route 12 South to Downtown/MTC is departing at 4:00 PM and 4:22 PM" + SEPARATOR +
+                        "Route 5 North to University Area TC is arriving at 4:01 PM and 4:27 PM" + SEPARATOR +
+                        "Route 6 North to University Area TC is arriving at 4:02 PM and 4:29 PM" + SEPARATOR +
+                        "Route 1 Downtown to UATC via Florida Ave is arriving at 4:12 PM and 4:29 PM" + SEPARATOR +
+                        "Route 45 North to University Area TC is arriving at 4:15 PM" + SEPARATOR +
+                        "Route 45 South to Westshore TC is departing at 4:15 PM" + SEPARATOR +
+                        "Route 2 Downtown to UATC via Nebraska Ave is arriving at 4:18 PM" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing at 5:43 PM based on the schedule" + SEPARATOR
                 , summary);
     }
 }

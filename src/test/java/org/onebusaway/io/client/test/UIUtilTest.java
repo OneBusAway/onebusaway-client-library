@@ -62,7 +62,7 @@ public class UIUtilTest extends ObaTestCase {
          */
         boolean includeArriveDepartLabels = true;
         List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
-                response.getCurrentTime(), includeArriveDepartLabels);
+                response.getCurrentTime(), includeArriveDepartLabels, false);
 
         // Now confirm that we have the correct number of elements, and values for ETAs for the test
         validateUatcArrivalInfo(arrivalInfo);
@@ -140,7 +140,7 @@ public class UIUtilTest extends ObaTestCase {
          */
         includeArriveDepartLabels = false;
         arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
-                response.getCurrentTime(), includeArriveDepartLabels);
+                response.getCurrentTime(), includeArriveDepartLabels, false);
 
         // Now confirm that we have the correct number of elements, and values for ETAs for the test
         validateUatcArrivalInfo(arrivalInfo);
@@ -222,9 +222,9 @@ public class UIUtilTest extends ObaTestCase {
     }
 
     /**
-     * Tests the summary of arrival info
+     * Tests the summary of arrival info with an ETA value like "in 9 minutes"
      */
-    public void testArrivalSummary() {
+    public void testArrivalSummaryEta() {
         // Initial setup to get an ObaArrivalInfo object from a test response
         ObaRegion tampa = MockRegion.getTampa();
         assertNotNull(tampa);
@@ -249,11 +249,13 @@ public class UIUtilTest extends ObaTestCase {
          * Labels with arrive/depart included, and time labels
          */
         boolean includeArriveDepartLabels = true;
-        List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
-                response.getCurrentTime(), includeArriveDepartLabels);
-
         final String SEPARATOR = "\n";
-        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR);
+
+        // ETA (instead of clock time)
+        boolean clocktime = false;
+        List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
+                response.getCurrentTime(), includeArriveDepartLabels, clocktime);
+        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime);
         assertEquals("Route 9 Downtown to UATC via 15th St arrived 4 minutes ago and is arriving again in 35 minutes" + SEPARATOR +
                         "Route 6 South to Downtown/MTC departed 3 minutes ago and is departing again in 14 minutes and 35 minutes" + SEPARATOR +
                         "Route 1 UATC to Downtown via Florida Ave departed 1 minute ago and is departing again in 25 minutes" + SEPARATOR +
@@ -271,6 +273,62 @@ public class UIUtilTest extends ObaTestCase {
                 "Route 45 South to Westshore TC is departing in 20 minutes" + SEPARATOR +
                         "Route 2 Downtown to UATC via Nebraska Ave is arriving in 23 minutes" + SEPARATOR +
                         "Route 9 UATC to Downtown via 15th St is departing in 108 minutes based on the schedule" + SEPARATOR
+                , summary);
+    }
+
+    /**
+     * Tests the summary of arrival info with a clock time value like "at 10:05 PM"
+     */
+    public void testArrivalSummaryClockTime() {
+        // Initial setup to get an ObaArrivalInfo object from a test response
+        ObaRegion tampa = MockRegion.getTampa();
+        assertNotNull(tampa);
+        ObaApi.getDefaultContext().setRegion(tampa);
+
+        ObaArrivalInfoResponse response =
+                new ObaArrivalInfoRequest.Builder("Hillsborough%20Area%20Regional%20Transit_10001").build().call();
+        assertOK(response);
+        ObaStop stop = response.getStop();
+        assertNotNull(stop);
+        assertEquals("Hillsborough Area Regional Transit_6497", stop.getId());
+        List<ObaRoute> routes = response.getRoutes(stop.getRouteIds());
+        assertTrue(routes.size() > 0);
+        ObaAgency agency = response.getAgency(routes.get(0).getAgencyId());
+        assertEquals("Hillsborough Area Regional Transit", agency.getId());
+
+        // Get the response
+        ObaArrivalInfo[] arrivals = response.getArrivalInfo();
+        assertNotNull(arrivals);
+
+        /**
+         * Labels with arrive/depart included, and time labels
+         */
+        boolean includeArriveDepartLabels = true;
+        List<ArrivalInfo> arrivalInfo;
+        final String SEPARATOR = "\n";
+
+        // Clock time (instead of ETA)
+        boolean clocktime = true;
+        arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
+                response.getCurrentTime(), includeArriveDepartLabels, clocktime);
+        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime);
+        assertEquals("Route 9 Downtown to UATC via 15th St arrived at 3:51 PM and is arriving again at 4:30 PM" + SEPARATOR +
+                        "Route 6 South to Downtown/MTC departed at 3:52 PM and is departing again at 4:09 PM and 4:30 PM" + SEPARATOR +
+                        "Route 1 UATC to Downtown via Florida Ave departed at 3:54 PM and is departing again at 4:20 PM" + SEPARATOR +
+                        "Route 18 North to UATC/Livingston arrived at 3:54 PM and is arriving again at 4:23 PM and 4:27 PM" + SEPARATOR +
+                        "Route 5 South to Downtown/MTC departed at 3:54 PM and is departing again at 4:30 PM" + SEPARATOR +
+                        "Route 2 UATC to Downtown via Nebraska Ave is departing now and again at 4:25 PM" + SEPARATOR +
+                        "Route 18 South to UATC/Downtown/MTC is arriving now and again at 4:05 PM and 4:25 PM" + SEPARATOR +
+                        "Route 12 North to University Area TC is arriving at 3:58 PM and 4:21 PM" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing at 4:00 PM, 4:30 PM, 5:20 PM, and 5:25 PM" + SEPARATOR +
+                        "Route 12 South to Downtown/MTC is departing at 4:00 PM and 4:22 PM" + SEPARATOR +
+                        "Route 5 North to University Area TC is arriving at 4:01 PM and 4:27 PM" + SEPARATOR +
+                        "Route 6 North to University Area TC is arriving at 4:02 PM and 4:29 PM" + SEPARATOR +
+                        "Route 1 Downtown to UATC via Florida Ave is arriving at 4:12 PM and 4:29 PM" + SEPARATOR +
+                        "Route 45 North to University Area TC is arriving at 4:15 PM" + SEPARATOR +
+                        "Route 45 South to Westshore TC is departing at 4:15 PM" + SEPARATOR +
+                        "Route 2 Downtown to UATC via Nebraska Ave is arriving at 4:18 PM" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing at 5:43 PM based on the schedule" + SEPARATOR
                 , summary);
     }
 }

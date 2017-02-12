@@ -44,11 +44,14 @@ public final class ArrivalInfo {
      * @param arrivalInfo
      * @param filter      routeIds to filter for
      * @param ms          current time in milliseconds
+     * @param includeArrivalDepartureInStatusLabel
+     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
      * @return ArrayList of arrival info to be used with the adapter
      */
     public static final List<ArrivalInfo> convertObaArrivalInfo(ObaArrivalInfo[] arrivalInfo,
                                                                 List<String> filter, long ms,
-                                                                boolean includeArrivalDepartureInStatusLabel) {
+                                                                boolean includeArrivalDepartureInStatusLabel,
+                                                                boolean clockTime) {
         final int len = arrivalInfo.length;
         List<ArrivalInfo> result = new ArrayList<>(len);
         if (filter != null && filter.size() > 0) {
@@ -56,14 +59,14 @@ public final class ArrivalInfo {
             for (int i = 0; i < len; ++i) {
                 ObaArrivalInfo arrival = arrivalInfo[i];
                 if (filter.contains(arrival.getRouteId())) {
-                    ArrivalInfo info = new ArrivalInfo(arrival, ms, includeArrivalDepartureInStatusLabel);
+                    ArrivalInfo info = new ArrivalInfo(arrival, ms, includeArrivalDepartureInStatusLabel, clockTime);
                     result.add(info);
                 }
             }
         } else {
             // Add arrivals for all routes
             for (int i = 0; i < len; ++i) {
-                ArrivalInfo info = new ArrivalInfo(arrivalInfo[i], ms, includeArrivalDepartureInStatusLabel);
+                ArrivalInfo info = new ArrivalInfo(arrivalInfo[i], ms, includeArrivalDepartureInStatusLabel, clockTime);
                 result.add(info);
             }
         }
@@ -119,8 +122,9 @@ public final class ArrivalInfo {
      *
      * @param sb          StringBuilder to add the text to
      * @param arrivalInfo ArrivalInfo to compute the arrived/departed text for
+     * @param clockTime   true if the time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
      */
-    public static void computeNegativeEtaText(StringBuilder sb, ArrivalInfo arrivalInfo) {
+    public static void computeNegativeEtaText(StringBuilder sb, ArrivalInfo arrivalInfo, boolean clockTime) {
         if (sb == null) {
             throw new IllegalArgumentException("StringBuilder cannot be null");
         }
@@ -131,12 +135,21 @@ public final class ArrivalInfo {
             sb.append(LongDescription.DEPARTED);
         }
         sb.append(SPACE);
-        sb.append(invertEta);
-        sb.append(SPACE);
-        if (invertEta < 2) {
-            sb.append(MINUTE_AGO);
+
+        if (clockTime) {
+            // e.g., 10:05 PM
+            sb.append(AT);
+            sb.append(SPACE);
+            sb.append(UIUtils.formatTime(arrivalInfo.getDisplayTime()));
         } else {
-            sb.append(MINUTES_AGO);
+            // ETA - e.g., in 9 minutes
+            sb.append(invertEta);
+            sb.append(SPACE);
+            if (invertEta < 2) {
+                sb.append(MINUTE_AGO);
+            } else {
+                sb.append(MINUTES_AGO);
+            }
         }
     }
 
@@ -163,26 +176,39 @@ public final class ArrivalInfo {
      * @param sb   StringBuilder to add the text to
      * @param info Prediction info
      * @param addAgain true if the work "again" should be added ("is arriving/departing again in.."), false if it should not
+     * @param clockTime true if the time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
      */
-    public static void computePositiveEtaText(StringBuilder sb, ArrivalInfo info, boolean addAgain) {
+    public static void computePositiveEtaText(StringBuilder sb, ArrivalInfo info, boolean addAgain, boolean clockTime) {
         if (sb == null) {
             throw new IllegalArgumentException("StringBuilder cannot be null");
         }
         if (info.isArrival()) {
             if (!addAgain) {
-                sb.append(IS_ARRIVING_IN);
+                sb.append(IS_ARRIVING);
             } else {
-                sb.append(IS_ARRIVING_AGAIN_IN);
+                sb.append(IS_ARRIVING_AGAIN);
             }
         } else {
             if (!addAgain) {
-                sb.append(IS_DEPARTING_IN);
+                sb.append(IS_DEPARTING);
             } else {
-                sb.append(IS_DEPARTING_AGAIN_IN);
+                sb.append(IS_DEPARTING_AGAIN);
             }
         }
         sb.append(SPACE);
-        sb.append(info.getEta());
+        if (clockTime) {
+            sb.append(AT);
+        } else {
+            sb.append(IN);
+        }
+        sb.append(SPACE);
+        if (clockTime) {
+            // e.g., 10:05 PM
+            sb.append(UIUtils.formatTime(info.getDisplayTime()));
+        } else {
+            // ETA - e.g., in 9 minutes
+            sb.append(info.getEta());
+        }
     }
 
     /**
@@ -248,9 +274,10 @@ public final class ArrivalInfo {
      *                                             should be
      *                                             included in the status label false if it
      *                                             should not
+     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
      */
     public ArrivalInfo(ObaArrivalInfo info, long now,
-                       boolean includeArrivalDepartureInStatusLabel) {
+                       boolean includeArrivalDepartureInStatusLabel, boolean clockTime) {
         mInfo = info;
         // First, all times have to have to be converted to 'minutes'
         final long nowMins = now / ms_in_mins;
@@ -285,7 +312,7 @@ public final class ArrivalInfo {
         mStatusText = computeStatusLabel(info, now, predicted,
                 scheduledMins, predictedMins, includeArrivalDepartureInStatusLabel);
 
-        mLongDescription = computeLongDescription();
+        mLongDescription = computeLongDescription(clockTime);
     }
 
     /**
@@ -484,22 +511,31 @@ public final class ArrivalInfo {
         }
     }
 
-    private String computeLongDescription() {
+    /**
+     * Returns a long description for this arrival time in sentence format
+     *
+     * @param clockTime true if the time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
+     * @return a long description for this arrival time in sentence format
+     */
+    private String computeLongDescription(boolean clockTime) {
         StringBuilder sb = new StringBuilder();
         computeRouteAndHeadsign(sb, mInfo);
         sb.append(SPACE);
 
         if (mEta < 0) {
             // Route just arrived or departed
-            computeNegativeEtaText(sb, this);
+            computeNegativeEtaText(sb, this, clockTime);
         } else if (mEta == 0) {
             // Route is now arriving/departing
             computeZeroEtaText(sb, this);
         } else {
             // Route is arriving or departing in future
-            computePositiveEtaText(sb, this, false);
-            sb.append(SPACE);
-            computeMinutesText(sb, this);
+            computePositiveEtaText(sb, this, false, clockTime);
+
+            if (!clockTime) {
+                sb.append(SPACE);
+                computeMinutesText(sb, this);
+            }
         }
 
         // If its not real-time info, add statement about schedule
@@ -622,10 +658,10 @@ public final class ArrivalInfo {
         String MINUTES_AGO = "minutes ago";
         String IS_ARRIVING_NOW = "is arriving now";
         String IS_DEPARTING_NOW = "is departing now";
-        String IS_ARRIVING_IN = "is arriving in";
-        String IS_ARRIVING_AGAIN_IN = "is arriving again in";
-        String IS_DEPARTING_IN = "is departing in";
-        String IS_DEPARTING_AGAIN_IN = "is departing again in";
+        String IS_ARRIVING = "is arriving";
+        String IS_ARRIVING_AGAIN = "is arriving again";
+        String IS_DEPARTING = "is departing";
+        String IS_DEPARTING_AGAIN = "is departing again";
         String MINUTE = "minute";
         String MINUTES = "minutes";
         String BASED_ON_SCHEDULE = "based on the schedule";
@@ -634,5 +670,6 @@ public final class ArrivalInfo {
         String IN = "in";
         String COMMA = ",";
         String ALL = "all";
+        String AT = "at";
     }
 }

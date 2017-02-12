@@ -22,6 +22,7 @@ import org.onebusaway.io.client.elements.ObaRoute;
 import org.onebusaway.io.client.elements.ObaStop;
 import org.onebusaway.util.comparators.AlphanumComparator;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.onebusaway.io.client.util.ArrivalInfo.LongDescription.*;
@@ -31,6 +32,8 @@ import static org.onebusaway.io.client.util.ArrivalInfo.*;
  * A class containing utility methods related to the user interface
  */
 public class UIUtils {
+
+    static SimpleDateFormat mSdfDate;
 
     /**
      * Returns a comma-delimited list of route display names that serve a stop
@@ -159,6 +162,21 @@ public class UIUtils {
     }
 
     /**
+     * Returns the time formatting as "1:10pm" to be displayed as an absolute time for an
+     * arrival/departure
+     *
+     * @param time an arrival or departure time (e.g., from ArrivalInfo)
+     * @return the time formatting as "1:10pm" to be displayed as an absolute time for an
+     * arrival/departure
+     */
+    public static String formatTime(long time) {
+        if (mSdfDate == null) {
+            mSdfDate = new SimpleDateFormat("h:mm a");
+        }
+        return mSdfDate.format(time);
+    }
+
+    /**
      * Generates a summary of arrival/departure information in the following format:
      * <p>
      * "The next bus on Route 45 university district east green lake is arriving in 2 minutes, and will arrive
@@ -167,10 +185,11 @@ public class UIUtils {
      *
      * @param arrivalInfo the arrival information to generate the summary text for
      * @param separator   a string used as a separator between each arrival
+     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
      * @return a summary of arrival/departure information, with each arrival info summary separated by the provided
      * separator
      */
-    public static final String getArrivalInfoSummary(List<ArrivalInfo> arrivalInfo, String separator) {
+    public static final String getArrivalInfoSummary(List<ArrivalInfo> arrivalInfo, String separator, boolean clockTime) {
         /**
          * Create an ordered map to hold a grouping of route types, based on same route, headsign, arrival/departure,
          * and real-time/scheduled.  Key is generated so arrivals of the same grouping in the text can be matched, and
@@ -231,7 +250,7 @@ public class UIUtils {
             for (Integer arrivalIndex : routeGroup) {
                 if (arrivalInfo.get(arrivalIndex).getEta() < 0) {
                     // Route just arrived or departed - don't aggregate this with now or upcoming
-                    computeNegativeEtaText(output, arrivalInfo.get(arrivalIndex));
+                    computeNegativeEtaText(output, arrivalInfo.get(arrivalIndex), clockTime);
                     output.append(SPACE);
                     output.append(AND);
                     output.append(SPACE);
@@ -254,9 +273,19 @@ public class UIUtils {
                             output.append(SPACE);
                             output.append(AGAIN);
                             output.append(SPACE);
-                            output.append(IN);
+                            if (clockTime) {
+                                output.append(AT);
+                            } else {
+                                output.append(IN);
+                            }
                             output.append(SPACE);
-                            output.append(arrivalInfo.get(arrivalIndex).getEta());
+                            if (clockTime) {
+                                // e.g., 10:05 PM
+                                output.append(UIUtils.formatTime(arrivalInfo.get(arrivalIndex).getDisplayTime()));
+                            } else {
+                                // ETA - e.g., in 9 minutes
+                                output.append(arrivalInfo.get(arrivalIndex).getEta());
+                            }
                         } else {
                             boolean again = false;
                             if (i != 0) {
@@ -264,11 +293,14 @@ public class UIUtils {
                                 again = true;
                             }
 
-                            // Add "is arriving/departing in X minutes"
-                            computePositiveEtaText(output, arrivalInfo.get(arrivalIndex), again);
+                            // Add "is arriving/departing in X minutes (or 10:05 PM)"
+                            computePositiveEtaText(output, arrivalInfo.get(arrivalIndex), again, clockTime);
                         }
-                        output.append(SPACE);
-                        computeMinutesText(output, arrivalInfo.get(arrivalIndex));
+
+                        if (!clockTime) {
+                            output.append(SPACE);
+                            computeMinutesText(output, arrivalInfo.get(arrivalIndex));
+                        }
 
                         if (i < routeGroup.size() - 2) {
                             // This is before the second-to-last prediction, so add a comma and space before next one
@@ -288,9 +320,16 @@ public class UIUtils {
                             output.append(AND);
                             output.append(SPACE);
                         }
-                        output.append(arrivalInfo.get(arrivalIndex).getEta());
-                        output.append(SPACE);
-                        computeMinutesText(output, arrivalInfo.get(arrivalIndex));
+
+                        if (clockTime) {
+                            // e.g., 10:05 PM
+                            output.append(UIUtils.formatTime(arrivalInfo.get(arrivalIndex).getDisplayTime()));
+                        } else {
+                            // ETA - e.g., in 9 minutes
+                            output.append(arrivalInfo.get(arrivalIndex).getEta());
+                            output.append(SPACE);
+                            computeMinutesText(output, arrivalInfo.get(arrivalIndex));
+                        }
 
                         if (i < routeGroup.size() - 1) {
                             // This isn't the last prediction for this route/headsign

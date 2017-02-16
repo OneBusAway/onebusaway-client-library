@@ -166,12 +166,16 @@ public class UIUtils {
      * arrival/departure
      *
      * @param time an arrival or departure time (e.g., from ArrivalInfo)
+     * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
      * @return the time formatting as "1:10pm" to be displayed as an absolute time for an
      * arrival/departure
      */
-    public static String formatTime(long time) {
+    public static String formatTime(long time, TimeZone timeZone) {
         if (mSdfDate == null) {
             mSdfDate = new SimpleDateFormat("h:mm a");
+        }
+        if (timeZone != null) {
+            mSdfDate.setTimeZone(timeZone);
         }
         return mSdfDate.format(time);
     }
@@ -186,10 +190,11 @@ public class UIUtils {
      * @param arrivalInfo the arrival information to generate the summary text for
      * @param separator   a string used as a separator between each arrival
      * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
+     * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
      * @return a summary of arrival/departure information, with each arrival info summary separated by the provided
      * separator
      */
-    public static final String getArrivalInfoSummary(List<ArrivalInfo> arrivalInfo, String separator, boolean clockTime) {
+    public static final String getArrivalInfoSummary(List<ArrivalInfo> arrivalInfo, String separator, boolean clockTime, TimeZone timeZone) {
         /**
          * Create an ordered map to hold a grouping of route types, based on same route, headsign, arrival/departure,
          * and real-time/scheduled.  Key is generated so arrivals of the same grouping in the text can be matched, and
@@ -250,7 +255,7 @@ public class UIUtils {
             for (Integer arrivalIndex : routeGroup) {
                 if (arrivalInfo.get(arrivalIndex).getEta() < 0) {
                     // Route just arrived or departed - don't aggregate this with now or upcoming
-                    computeNegativeEtaText(output, arrivalInfo.get(arrivalIndex), clockTime);
+                    computeNegativeEtaText(output, arrivalInfo.get(arrivalIndex), clockTime, timeZone);
                     output.append(SPACE);
                     output.append(AND);
                     output.append(SPACE);
@@ -281,7 +286,7 @@ public class UIUtils {
                             output.append(SPACE);
                             if (clockTime) {
                                 // e.g., 10:05 PM
-                                output.append(UIUtils.formatTime(arrivalInfo.get(arrivalIndex).getDisplayTime()));
+                                output.append(UIUtils.formatTime(arrivalInfo.get(arrivalIndex).getDisplayTime(), timeZone));
                             } else {
                                 // ETA - e.g., in 9 minutes
                                 output.append(arrivalInfo.get(arrivalIndex).getEta());
@@ -294,7 +299,7 @@ public class UIUtils {
                             }
 
                             // Add "is arriving/departing in X minutes (or 10:05 PM)"
-                            computePositiveEtaText(output, arrivalInfo.get(arrivalIndex), again, clockTime);
+                            computePositiveEtaText(output, arrivalInfo.get(arrivalIndex), again, clockTime, timeZone);
                         }
 
                         if (!clockTime) {
@@ -323,7 +328,7 @@ public class UIUtils {
 
                         if (clockTime) {
                             // e.g., 10:05 PM
-                            output.append(UIUtils.formatTime(arrivalInfo.get(arrivalIndex).getDisplayTime()));
+                            output.append(UIUtils.formatTime(arrivalInfo.get(arrivalIndex).getDisplayTime(), timeZone));
                         } else {
                             // ETA - e.g., in 9 minutes
                             output.append(arrivalInfo.get(arrivalIndex).getEta());

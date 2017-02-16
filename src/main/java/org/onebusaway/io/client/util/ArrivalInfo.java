@@ -45,13 +45,14 @@ public final class ArrivalInfo {
      * @param filter      routeIds to filter for
      * @param ms          current time in milliseconds
      * @param includeArrivalDepartureInStatusLabel
-     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
+     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes".
+     * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
      * @return ArrayList of arrival info to be used with the adapter
      */
     public static final List<ArrivalInfo> convertObaArrivalInfo(ObaArrivalInfo[] arrivalInfo,
                                                                 List<String> filter, long ms,
                                                                 boolean includeArrivalDepartureInStatusLabel,
-                                                                boolean clockTime) {
+                                                                boolean clockTime, TimeZone timeZone) {
         final int len = arrivalInfo.length;
         List<ArrivalInfo> result = new ArrayList<>(len);
         if (filter != null && filter.size() > 0) {
@@ -59,14 +60,14 @@ public final class ArrivalInfo {
             for (int i = 0; i < len; ++i) {
                 ObaArrivalInfo arrival = arrivalInfo[i];
                 if (filter.contains(arrival.getRouteId())) {
-                    ArrivalInfo info = new ArrivalInfo(arrival, ms, includeArrivalDepartureInStatusLabel, clockTime);
+                    ArrivalInfo info = new ArrivalInfo(arrival, ms, includeArrivalDepartureInStatusLabel, clockTime, timeZone);
                     result.add(info);
                 }
             }
         } else {
             // Add arrivals for all routes
             for (int i = 0; i < len; ++i) {
-                ArrivalInfo info = new ArrivalInfo(arrivalInfo[i], ms, includeArrivalDepartureInStatusLabel, clockTime);
+                ArrivalInfo info = new ArrivalInfo(arrivalInfo[i], ms, includeArrivalDepartureInStatusLabel, clockTime, timeZone);
                 result.add(info);
             }
         }
@@ -122,9 +123,10 @@ public final class ArrivalInfo {
      *
      * @param sb          StringBuilder to add the text to
      * @param arrivalInfo ArrivalInfo to compute the arrived/departed text for
-     * @param clockTime   true if the time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
+     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes".
+     * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
      */
-    public static void computeNegativeEtaText(StringBuilder sb, ArrivalInfo arrivalInfo, boolean clockTime) {
+    public static void computeNegativeEtaText(StringBuilder sb, ArrivalInfo arrivalInfo, boolean clockTime, TimeZone timeZone) {
         if (sb == null) {
             throw new IllegalArgumentException("StringBuilder cannot be null");
         }
@@ -140,7 +142,7 @@ public final class ArrivalInfo {
             // e.g., 10:05 PM
             sb.append(AT);
             sb.append(SPACE);
-            sb.append(UIUtils.formatTime(arrivalInfo.getDisplayTime()));
+            sb.append(UIUtils.formatTime(arrivalInfo.getDisplayTime(), timeZone));
         } else {
             // ETA - e.g., in 9 minutes
             sb.append(invertEta);
@@ -177,8 +179,9 @@ public final class ArrivalInfo {
      * @param info Prediction info
      * @param addAgain true if the work "again" should be added ("is arriving/departing again in.."), false if it should not
      * @param clockTime true if the time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
+     * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
      */
-    public static void computePositiveEtaText(StringBuilder sb, ArrivalInfo info, boolean addAgain, boolean clockTime) {
+    public static void computePositiveEtaText(StringBuilder sb, ArrivalInfo info, boolean addAgain, boolean clockTime, TimeZone timeZone) {
         if (sb == null) {
             throw new IllegalArgumentException("StringBuilder cannot be null");
         }
@@ -204,7 +207,7 @@ public final class ArrivalInfo {
         sb.append(SPACE);
         if (clockTime) {
             // e.g., 10:05 PM
-            sb.append(UIUtils.formatTime(info.getDisplayTime()));
+            sb.append(UIUtils.formatTime(info.getDisplayTime(), timeZone));
         } else {
             // ETA - e.g., in 9 minutes
             sb.append(info.getEta());
@@ -274,10 +277,11 @@ public final class ArrivalInfo {
      *                                             should be
      *                                             included in the status label false if it
      *                                             should not
-     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
+     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes".
+     * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
      */
     public ArrivalInfo(ObaArrivalInfo info, long now,
-                       boolean includeArrivalDepartureInStatusLabel, boolean clockTime) {
+                       boolean includeArrivalDepartureInStatusLabel, boolean clockTime, TimeZone timeZone) {
         mInfo = info;
         // First, all times have to have to be converted to 'minutes'
         final long nowMins = now / ms_in_mins;
@@ -312,7 +316,7 @@ public final class ArrivalInfo {
         mStatusText = computeStatusLabel(info, now, predicted,
                 scheduledMins, predictedMins, includeArrivalDepartureInStatusLabel);
 
-        mLongDescription = computeLongDescription(clockTime);
+        mLongDescription = computeLongDescription(clockTime, timeZone);
     }
 
     /**
@@ -514,23 +518,24 @@ public final class ArrivalInfo {
     /**
      * Returns a long description for this arrival time in sentence format
      *
-     * @param clockTime true if the time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
+     * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes".
+     * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
      * @return a long description for this arrival time in sentence format
      */
-    private String computeLongDescription(boolean clockTime) {
+    private String computeLongDescription(boolean clockTime, TimeZone timeZone) {
         StringBuilder sb = new StringBuilder();
         computeRouteAndHeadsign(sb, mInfo);
         sb.append(SPACE);
 
         if (mEta < 0) {
             // Route just arrived or departed
-            computeNegativeEtaText(sb, this, clockTime);
+            computeNegativeEtaText(sb, this, clockTime, timeZone);
         } else if (mEta == 0) {
             // Route is now arriving/departing
             computeZeroEtaText(sb, this);
         } else {
             // Route is arriving or departing in future
-            computePositiveEtaText(sb, this, false, clockTime);
+            computePositiveEtaText(sb, this, false, clockTime, timeZone);
 
             if (!clockTime) {
                 sb.append(SPACE);

@@ -26,6 +26,7 @@ import org.onebusaway.io.client.util.ArrivalInfo;
 import org.onebusaway.io.client.util.UIUtils;
 
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Tests to evaluate utility methods related to the presentation of information to the user in the
@@ -62,7 +63,7 @@ public class UIUtilTest extends ObaTestCase {
          */
         boolean includeArriveDepartLabels = true;
         List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
-                response.getCurrentTime(), includeArriveDepartLabels, false);
+                response.getCurrentTime(), includeArriveDepartLabels, false, null);
 
         // Now confirm that we have the correct number of elements, and values for ETAs for the test
         validateUatcArrivalInfo(arrivalInfo);
@@ -140,7 +141,7 @@ public class UIUtilTest extends ObaTestCase {
          */
         includeArriveDepartLabels = false;
         arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
-                response.getCurrentTime(), includeArriveDepartLabels, false);
+                response.getCurrentTime(), includeArriveDepartLabels, false, null);
 
         // Now confirm that we have the correct number of elements, and values for ETAs for the test
         validateUatcArrivalInfo(arrivalInfo);
@@ -254,8 +255,8 @@ public class UIUtilTest extends ObaTestCase {
         // ETA (instead of clock time)
         boolean clocktime = false;
         List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
-                response.getCurrentTime(), includeArriveDepartLabels, clocktime);
-        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime);
+                response.getCurrentTime(), includeArriveDepartLabels, clocktime, null);
+        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, null);
         assertEquals("Route 9 Downtown to UATC via 15th St arrived 4 minutes ago and is arriving again in 35 minutes" + SEPARATOR +
                         "Route 6 South to Downtown/MTC departed 3 minutes ago and is departing again in 14 minutes and 35 minutes" + SEPARATOR +
                         "Route 1 UATC to Downtown via Florida Ave departed 1 minute ago and is departing again in 25 minutes" + SEPARATOR +
@@ -309,9 +310,13 @@ public class UIUtilTest extends ObaTestCase {
 
         // Clock time (instead of ETA)
         boolean clocktime = true;
+
+        // East coast time
+        String timeZoneText = "America/New_York";
+        TimeZone timeZone = TimeZone.getTimeZone(timeZoneText);
         arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
-                response.getCurrentTime(), includeArriveDepartLabels, clocktime);
-        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime);
+                response.getCurrentTime(), includeArriveDepartLabels, clocktime, timeZone);
+        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, timeZone);
         assertEquals("Route 9 Downtown to UATC via 15th St arrived at 3:51 PM and is arriving again at 4:30 PM" + SEPARATOR +
                         "Route 6 South to Downtown/MTC departed at 3:52 PM and is departing again at 4:09 PM and 4:30 PM" + SEPARATOR +
                         "Route 1 UATC to Downtown via Florida Ave departed at 3:54 PM and is departing again at 4:20 PM" + SEPARATOR +
@@ -329,6 +334,31 @@ public class UIUtilTest extends ObaTestCase {
                         "Route 45 South to Westshore TC is departing at 4:15 PM" + SEPARATOR +
                         "Route 2 Downtown to UATC via Nebraska Ave is arriving at 4:18 PM" + SEPARATOR +
                         "Route 9 UATC to Downtown via 15th St is departing at 5:43 PM based on the schedule" + SEPARATOR
+                , summary);
+
+        // West coast time
+        timeZoneText = "America/Los_Angeles";
+        timeZone = TimeZone.getTimeZone(timeZoneText);
+        arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
+                response.getCurrentTime(), includeArriveDepartLabels, clocktime, timeZone);
+        summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, timeZone);
+        assertEquals("Route 9 Downtown to UATC via 15th St arrived at 12:51 PM and is arriving again at 1:30 PM" + SEPARATOR +
+                        "Route 6 South to Downtown/MTC departed at 12:52 PM and is departing again at 1:09 PM and 1:30 PM" + SEPARATOR +
+                        "Route 1 UATC to Downtown via Florida Ave departed at 12:54 PM and is departing again at 1:20 PM" + SEPARATOR +
+                        "Route 18 North to UATC/Livingston arrived at 12:54 PM and is arriving again at 1:23 PM and 1:27 PM" + SEPARATOR +
+                        "Route 5 South to Downtown/MTC departed at 12:54 PM and is departing again at 1:30 PM" + SEPARATOR +
+                        "Route 2 UATC to Downtown via Nebraska Ave is departing now and again at 1:25 PM" + SEPARATOR +
+                        "Route 18 South to UATC/Downtown/MTC is arriving now and again at 1:05 PM and 1:25 PM" + SEPARATOR +
+                        "Route 12 North to University Area TC is arriving at 12:58 PM and 1:21 PM" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing at 1:00 PM, 1:30 PM, 2:20 PM, and 2:25 PM" + SEPARATOR +
+                        "Route 12 South to Downtown/MTC is departing at 1:00 PM and 1:22 PM" + SEPARATOR +
+                        "Route 5 North to University Area TC is arriving at 1:01 PM and 1:27 PM" + SEPARATOR +
+                        "Route 6 North to University Area TC is arriving at 1:02 PM and 1:29 PM" + SEPARATOR +
+                        "Route 1 Downtown to UATC via Florida Ave is arriving at 1:12 PM and 1:29 PM" + SEPARATOR +
+                        "Route 45 North to University Area TC is arriving at 1:15 PM" + SEPARATOR +
+                        "Route 45 South to Westshore TC is departing at 1:15 PM" + SEPARATOR +
+                        "Route 2 Downtown to UATC via Nebraska Ave is arriving at 1:18 PM" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing at 2:43 PM based on the schedule" + SEPARATOR
                 , summary);
     }
 }

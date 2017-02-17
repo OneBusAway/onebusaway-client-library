@@ -15,11 +15,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import org.onebusaway.io.client.elements.ObaReferences;
-import org.onebusaway.io.client.elements.ObaReferencesElement;
-import org.onebusaway.io.client.elements.ObaRoute;
-import org.onebusaway.io.client.elements.ObaStop;
-import org.onebusaway.io.client.elements.ObaStopElement;
+import org.onebusaway.io.client.elements.*;
 import org.onebusaway.location.Location;
 
 import java.util.List;
@@ -99,7 +95,7 @@ public final class ObaStopResponse extends ObaResponseWithRefs implements ObaSto
     }
 
     @Override
-    protected ObaReferences getRefs() {
+    public ObaReferences getRefs() {
         return data.references;
     }
 }

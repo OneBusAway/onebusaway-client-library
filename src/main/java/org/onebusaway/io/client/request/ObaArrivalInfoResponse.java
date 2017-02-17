@@ -15,13 +15,9 @@
  */
 package org.onebusaway.io.client.request;
 
-import java.util.List;
+import org.onebusaway.io.client.elements.*;
 
-import org.onebusaway.io.client.elements.ObaArrivalInfo;
-import org.onebusaway.io.client.elements.ObaReferences;
-import org.onebusaway.io.client.elements.ObaReferencesElement;
-import org.onebusaway.io.client.elements.ObaSituation;
-import org.onebusaway.io.client.elements.ObaStop;
+import java.util.List;
 
 /**
  * Response object for ObaArrivalInfoRequest requests.
@@ -93,7 +89,7 @@ public final class ObaArrivalInfoResponse extends ObaResponseWithRefs {
     }
 
     @Override
-    protected ObaReferences getRefs() {
+    public ObaReferences getRefs() {
         return data.references;
     }
 }

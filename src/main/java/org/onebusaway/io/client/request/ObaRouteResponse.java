@@ -15,11 +15,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import org.onebusaway.io.client.elements.ObaAgency;
-import org.onebusaway.io.client.elements.ObaReferences;
-import org.onebusaway.io.client.elements.ObaReferencesElement;
-import org.onebusaway.io.client.elements.ObaRoute;
-import org.onebusaway.io.client.elements.ObaRouteElement;
+import org.onebusaway.io.client.elements.*;
 
 /**
  * Response object for ObaRouteRequest objects.
@@ -96,7 +92,7 @@ public final class ObaRouteResponse extends ObaResponseWithRefs implements ObaRo
     }
 
     @Override
-    protected ObaReferences getRefs() {
+    public ObaReferences getRefs() {
         return data.references;
     }
 }

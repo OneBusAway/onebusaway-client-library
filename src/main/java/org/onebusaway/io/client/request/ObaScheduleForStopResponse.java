@@ -15,12 +15,7 @@
  */
 package org.onebusaway.io.client.request;
 
-import org.onebusaway.io.client.elements.ObaReferences;
-import org.onebusaway.io.client.elements.ObaReferencesElement;
-import org.onebusaway.io.client.elements.ObaRouteSchedule;
-import org.onebusaway.io.client.elements.ObaStop;
-import org.onebusaway.io.client.elements.ObaStopSchedule;
-import org.onebusaway.io.client.elements.ObaStopScheduleElement;
+import org.onebusaway.io.client.elements.*;
 
 /**
  * Response object for ObaScheduleForStopRequest requests.
@@ -75,7 +70,7 @@ public final class ObaScheduleForStopResponse extends ObaResponseWithRefs
     }
 
     @Override
-    protected ObaReferences getRefs() {
+    public ObaReferences getRefs() {
         return data.references;
     }
 }

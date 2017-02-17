@@ -15,16 +15,10 @@
  */
 package org.onebusaway.io.client.request;
 
+import org.onebusaway.io.client.elements.*;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.onebusaway.io.client.elements.ObaReferences;
-import org.onebusaway.io.client.elements.ObaReferencesElement;
-import org.onebusaway.io.client.elements.ObaShape;
-import org.onebusaway.io.client.elements.ObaShapeElement;
-import org.onebusaway.io.client.elements.ObaStop;
-import org.onebusaway.io.client.elements.ObaStopGroup;
-import org.onebusaway.io.client.elements.ObaStopGrouping;
 
 /**
  * Response object for ObaStopForRouteRequest requests.
@@ -124,7 +118,7 @@ public final class ObaStopsForRouteResponse extends ObaResponseWithRefs {
     }
 
     @Override
-    protected ObaReferences getRefs() {
+    public ObaReferences getRefs() {
         return data.references;
     }
 }

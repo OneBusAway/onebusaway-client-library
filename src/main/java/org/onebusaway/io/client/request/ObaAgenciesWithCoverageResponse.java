@@ -51,7 +51,7 @@ public final class ObaAgenciesWithCoverageResponse extends ObaResponseWithRefs {
     }
 
     @Override
-    protected ObaReferences getRefs() {
+    public ObaReferences getRefs() {
         return data.references;
     }
 }

@@ -25,6 +25,7 @@ import org.onebusaway.io.client.request.ObaArrivalInfoResponse;
 import org.onebusaway.io.client.util.ArrivalInfo;
 import org.onebusaway.io.client.util.UIUtils;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -256,7 +257,7 @@ public class UIUtilTest extends ObaTestCase {
         boolean clocktime = false;
         List<ArrivalInfo> arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
                 response.getCurrentTime(), includeArriveDepartLabels, clocktime, null);
-        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, null);
+        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, null, null);
         assertEquals("Route 9 Downtown to UATC via 15th St arrived 4 minutes ago and is arriving again in 35 minutes" + SEPARATOR +
                         "Route 6 South to Downtown/MTC departed 3 minutes ago and is departing again in 14 minutes and 35 minutes" + SEPARATOR +
                         "Route 1 UATC to Downtown via Florida Ave departed 1 minute ago and is departing again in 25 minutes" + SEPARATOR +
@@ -272,6 +273,27 @@ public class UIUtilTest extends ObaTestCase {
                         "Route 1 Downtown to UATC via Florida Ave is arriving in 17 minutes and 34 minutes" + SEPARATOR +
                 "Route 45 North to University Area TC is arriving in 20 minutes" + SEPARATOR +
                 "Route 45 South to Westshore TC is departing in 20 minutes" + SEPARATOR +
+                        "Route 2 Downtown to UATC via Nebraska Ave is arriving in 23 minutes" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing in 108 minutes based on the schedule" + SEPARATOR
+                , summary);
+
+        // Test route filter - remove Route 45
+        HashSet<String> routesToFilter = new HashSet<>(1);
+        routesToFilter.add("Hillsborough Area Regional Transit_45");
+        summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, null, routesToFilter);
+        assertEquals("Route 9 Downtown to UATC via 15th St arrived 4 minutes ago and is arriving again in 35 minutes" + SEPARATOR +
+                        "Route 6 South to Downtown/MTC departed 3 minutes ago and is departing again in 14 minutes and 35 minutes" + SEPARATOR +
+                        "Route 1 UATC to Downtown via Florida Ave departed 1 minute ago and is departing again in 25 minutes" + SEPARATOR +
+                        "Route 18 North to UATC/Livingston arrived 1 minute ago and is arriving again in 28 minutes and 32 minutes" + SEPARATOR +
+                        "Route 5 South to Downtown/MTC departed 1 minute ago and is departing again in 35 minutes" + SEPARATOR +
+                        "Route 2 UATC to Downtown via Nebraska Ave is departing now and again in 30 minutes" + SEPARATOR +
+                        "Route 18 South to UATC/Downtown/MTC is arriving now and again in 10 minutes and 30 minutes" + SEPARATOR +
+                        "Route 12 North to University Area TC is arriving in 3 minutes and 26 minutes" + SEPARATOR +
+                        "Route 9 UATC to Downtown via 15th St is departing in 5 minutes, 35 minutes, 85 minutes, and 90 minutes" + SEPARATOR +
+                        "Route 12 South to Downtown/MTC is departing in 5 minutes and 27 minutes" + SEPARATOR +
+                        "Route 5 North to University Area TC is arriving in 6 minutes and 32 minutes" + SEPARATOR +
+                        "Route 6 North to University Area TC is arriving in 7 minutes and 34 minutes" + SEPARATOR +
+                        "Route 1 Downtown to UATC via Florida Ave is arriving in 17 minutes and 34 minutes" + SEPARATOR +
                         "Route 2 Downtown to UATC via Nebraska Ave is arriving in 23 minutes" + SEPARATOR +
                         "Route 9 UATC to Downtown via 15th St is departing in 108 minutes based on the schedule" + SEPARATOR
                 , summary);
@@ -316,7 +338,7 @@ public class UIUtilTest extends ObaTestCase {
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneText);
         arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
                 response.getCurrentTime(), includeArriveDepartLabels, clocktime, timeZone);
-        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, timeZone);
+        String summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, timeZone, null);
         assertEquals("Route 9 Downtown to UATC via 15th St arrived at 3:51 PM and is arriving again at 4:30 PM" + SEPARATOR +
                         "Route 6 South to Downtown/MTC departed at 3:52 PM and is departing again at 4:09 PM and 4:30 PM" + SEPARATOR +
                         "Route 1 UATC to Downtown via Florida Ave departed at 3:54 PM and is departing again at 4:20 PM" + SEPARATOR +
@@ -341,7 +363,7 @@ public class UIUtilTest extends ObaTestCase {
         timeZone = TimeZone.getTimeZone(timeZoneText);
         arrivalInfo = ArrivalInfo.convertObaArrivalInfo(arrivals, null,
                 response.getCurrentTime(), includeArriveDepartLabels, clocktime, timeZone);
-        summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, timeZone);
+        summary = UIUtils.getArrivalInfoSummary(arrivalInfo, SEPARATOR, clocktime, timeZone, null);
         assertEquals("Route 9 Downtown to UATC via 15th St arrived at 12:51 PM and is arriving again at 1:30 PM" + SEPARATOR +
                         "Route 6 South to Downtown/MTC departed at 12:52 PM and is departing again at 1:09 PM and 1:30 PM" + SEPARATOR +
                         "Route 1 UATC to Downtown via Florida Ave departed at 12:54 PM and is departing again at 1:20 PM" + SEPARATOR +

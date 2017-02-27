@@ -191,10 +191,11 @@ public class UIUtils {
      * @param separator   a string used as a separator between each arrival
      * @param clockTime true if the long description time should be clock time like "10:05 AM", or false if it should be an ETA like "in 5 minutes"
      * @param timeZone the timezone used to generate the clock time, or null if the current time zone should be used.  Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values.
+     * @param routesToFilter a set of routeIds that should NOT be read to the user, or null or empty set if all routes should be read
      * @return a summary of arrival/departure information, with each arrival info summary separated by the provided
      * separator
      */
-    public static final String getArrivalInfoSummary(List<ArrivalInfo> arrivalInfo, String separator, boolean clockTime, TimeZone timeZone) {
+    public static final String getArrivalInfoSummary(List<ArrivalInfo> arrivalInfo, String separator, boolean clockTime, TimeZone timeZone, HashSet<String> routesToFilter) {
         /**
          * Create an ordered map to hold a grouping of route types, based on same route, headsign, arrival/departure,
          * and real-time/scheduled.  Key is generated so arrivals of the same grouping in the text can be matched, and
@@ -209,6 +210,12 @@ public class UIUtils {
         List<Integer> routeGroup;
 
         for (ArrivalInfo ai : arrivalInfo) {
+            if (routesToFilter != null && routesToFilter.contains(ai.getInfo().getRouteId())) {
+                // Filter out arrivals for this route - skip to next arrival
+                index++;
+                continue;
+            }
+
             // Clear the key builder from the previous iteration
             keyBuilder.setLength(0);
 

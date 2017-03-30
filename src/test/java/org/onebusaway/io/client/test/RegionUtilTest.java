@@ -87,20 +87,20 @@ public class RegionUtilTest extends ObaTestCase {
          */
         // Close to region
         ObaRegion closestRegion = RegionUtils.getClosestRegion(list, mSeattleLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.PUGET_SOUND_REGION_ID);
+        assertEquals(MockRegion.PUGET_SOUND_REGION_ID, closestRegion.getId());
 
         closestRegion = RegionUtils.getClosestRegion(list, mTampaLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.TAMPA_REGION_ID);
+        assertEquals(MockRegion.TAMPA_REGION_ID, closestRegion.getId());
 
         closestRegion = RegionUtils.getClosestRegion(list, mAtlantaLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.ATLANTA_REGION_ID);
+        assertEquals(MockRegion.ATLANTA_REGION_ID, closestRegion.getId());
 
         // Far from region
         closestRegion = RegionUtils.getClosestRegion(list, mLondonLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.ATLANTA_REGION_ID);
+        assertEquals(MockRegion.ATLANTA_REGION_ID, closestRegion.getId());
 
         closestRegion = RegionUtils.getClosestRegion(list, mOriginLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.TAMPA_REGION_ID);
+        assertEquals(MockRegion.TAMPA_REGION_ID, closestRegion.getId());
 
         /**
          * With distance limiter - this should only return a region if its within
@@ -110,13 +110,13 @@ public class RegionUtilTest extends ObaTestCase {
 
         // Close to region
         closestRegion = RegionUtils.getClosestRegion(list, mSeattleLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.PUGET_SOUND_REGION_ID);
+        assertEquals(MockRegion.PUGET_SOUND_REGION_ID, closestRegion.getId());
 
         closestRegion = RegionUtils.getClosestRegion(list, mTampaLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.TAMPA_REGION_ID);
+        assertEquals(MockRegion.TAMPA_REGION_ID, closestRegion.getId());
 
         closestRegion = RegionUtils.getClosestRegion(list, mAtlantaLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.ATLANTA_REGION_ID);
+        assertEquals(MockRegion.ATLANTA_REGION_ID, closestRegion.getId());
 
         // Far from region
         closestRegion = RegionUtils.getClosestRegion(list, mLondonLoc, useLimiter, enforceUsableRegions);
@@ -133,7 +133,7 @@ public class RegionUtilTest extends ObaTestCase {
         // Turn off usable regions filter, which should give us NYC
         enforceUsableRegions = false;
         closestRegion = RegionUtils.getClosestRegion(list, mNewYorkLoc, useLimiter, enforceUsableRegions);
-        assertEquals(closestRegion.getId(), MockRegion.NEW_YORK_REGION_ID);
+        assertEquals(MockRegion.NEW_YORK_REGION_ID, closestRegion.getId());
     }
 
     public void testGetRegionSpan() {

@@ -16,6 +16,8 @@ public class MockRegion {
 
     public static final int PUGET_SOUND_REGION_ID = 1;
 
+    public static final int NEW_YORK_REGION_ID = 2;
+
     public static final int ATLANTA_REGION_ID = 3;
 
     public static ObaRegion getTampa() {
@@ -42,6 +44,16 @@ public class MockRegion {
         ArrayList<ObaRegion> regions = RegionUtils.getRegionsFromResources();
         for (ObaRegion r : regions) {
             if (r.getId() == ATLANTA_REGION_ID) {
+                return r;
+            }
+        }
+        return null; // This should never happen
+    }
+
+    public static ObaRegion getNewYork() {
+        ArrayList<ObaRegion> regions = RegionUtils.getRegionsFromResources();
+        for (ObaRegion r : regions) {
+            if (r.getId() == NEW_YORK_REGION_ID) {
                 return r;
             }
         }

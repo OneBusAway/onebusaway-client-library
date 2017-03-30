@@ -27,11 +27,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class RegionUtils {
 
@@ -50,13 +46,16 @@ public class RegionUtils {
      * @param loc     location
      * @param enforceThreshold true if the DISTANCE_LIMITER threshold should be enforced, false if
      *                         it should not
+     * @param enforceUsability true if the isRegionUsable() should be used to filter out regions that aren't typically
+     *                         usable by the library, or false to compare against all regions provided to this method
      * @return the closest region to the given location from the list of regions, or null if a
      * enforceThreshold is true and the closest region exceeded DISTANCE_LIMITER threshold or a
      * region couldn't be found
      */
     public static ObaRegion getClosestRegion(Collection<ObaRegion> regions,
                                              Location loc,
-                                             boolean enforceThreshold) {
+                                             boolean enforceThreshold,
+                                             boolean enforceUsability) {
         if (loc == null) {
             return null;
         }
@@ -73,7 +72,7 @@ public class RegionUtils {
         System.out.println("Finding region closest to " + loc.getLatitude() + "," + loc.getLongitude());
 
         for (ObaRegion region : regions) {
-            if (!isRegionUsable(region)) {
+            if (enforceUsability && !isRegionUsable(region)) {
                 System.out.println(
                         "Excluding '" + region.getName() + "' from 'closest region' consideration");
                 continue;
